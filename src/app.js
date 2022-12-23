@@ -1,5 +1,5 @@
 import Login from "./login";
-import Trips from "./trips";
+import TripsList from "./tripsList";
 import React, {useState} from 'react';
 
 export default function App() {
@@ -10,7 +10,7 @@ export default function App() {
             <main>
                 {userInfo == null
                     ? <Login onLogin={setUserInfo}/>
-                    : <Trips userInfo={userInfo} logout={() => setUserInfo(null)}/>
+                    : <TripsList userInfo={userInfo} logout={() => setUserInfo(null)}/>
                 }
             </main>
         </div>
