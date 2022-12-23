@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {CircularProgress} from "@mui/material";
+import TripPage from "./tripPage";
 
 const initialTrips = [
     {
@@ -19,6 +20,22 @@ const initialTrips = [
 ]
 
 export default function TripsList({ userInfo, logout }) {
+    const [selectedTrip, setSelectedTrip] = useState(null)
+
+    return (
+        <div className={"header"}>
+            <h1>Hi, {userInfo.name}</h1>
+            <button onClick={logout}>logout</button>
+
+            {selectedTrip == null
+                ? <Trips setSelectedTrip={setSelectedTrip}/>
+                : <TripPage trip={selectedTrip} userInfo={userInfo} back={() => setSelectedTrip(null)} />
+            }
+        </div>
+    )
+}
+
+function Trips({setSelectedTrip}) {
     const [trips, setTrips] = useState(null)
     useEffect(() => {
         setTimeout(() => {
@@ -26,24 +43,22 @@ export default function TripsList({ userInfo, logout }) {
         }, 1000)
     }, [])
 
-    return (
-        <div className={"header"}>
-            <h1>Hi, {userInfo.name}</h1>
-            <button onClick={logout}>logout</button>
+    if (trips == null) {
+        return <CircularProgress />
+    }
 
+    return (
+        <div>
             <h2>List of trips</h2>
-            {trips == null
-                ? <CircularProgress />
-                : (
-                    <ul>
-                        {trips.map(trip => (
-                            <li key={trip.id}>
-                                <h3>{trip.title}</h3>
-                                <p>Starts on {trip.startDate}, ends on {trip.endDate}</p>
-                            </li>
-                        ))}
-                    </ul>
-                )}
+            <ul>
+                {trips.map(trip => (
+                    <li key={trip.id}>
+                        <h3>{trip.title}</h3>
+                        <p>Starts on {trip.startDate}, ends on {trip.endDate}</p>
+                        <button onClick={() => setSelectedTrip(trip)}>View trip</button>
+                    </li>
+                ))}
+            </ul>
         </div>
     )
 }
