@@ -9,8 +9,6 @@ function delay(ms) {
 
 
 export default function TripPage({trip, userInfo, back}) {
-
-
     return (
         <div>
             <button onClick={back}>back to trip list</button>
@@ -31,9 +29,9 @@ function TripManagement() {
     useEffect(() => {
         setTimeout(() => {
             setApplicants([
-                {id: 4, name: 'john', letter: 'I really want to be there', status: 'applied'},
-                {id: 5, name: 'chris', letter: 'I never was in Yagodnoe', status: 'denied'},
-                {id: 6, name: 'steven', letter: 'Im looking for adventures', status: 'confirmed'}
+                {id: 4, name: 'john', letter: 'I really want to be there', status: 'applied' },
+                {id: 5, name: 'chris', letter: 'I never was in Yagodnoe', status: 'rejected' },
+                {id: 6, name: 'steven', letter: 'Im looking for adventures', status: 'confirmed' }
             ])
         }, 1000)
     }, [])
@@ -77,10 +75,13 @@ function ParticipantStatus({approved, changeStatus}) {
         <Select
             value={approved}
             label="Aplicant status"
+            onChange={e => {
+                changeStatus(e.target.value)
+            }}
         >
             <MenuItem value='applied'>{'applied'}</MenuItem>
             <MenuItem value='confirmed'>{'confirmed'}</MenuItem>
-            <MenuItem value='denied'>{'denied'}</MenuItem>
+            <MenuItem value='rejected'>{'rejected'}</MenuItem>
         </Select>
     )
 
@@ -89,8 +90,8 @@ function ParticipantStatus({approved, changeStatus}) {
     //     return <Chip label="confirmed" color="success" />
     // } else if (aplicantStatus === 'applied') {
     //     return <Chip label="applied" color="primary" />
-    // } else if (aplicantStatus === 'denied') {
-    //     return <Chip label="denied" color="error"/>
+    // } else if (aplicantStatus === 'rejected') {
+    //     return <Chip label="rejected" color="error"/>
     // }
     // //return <Chip label="unknown status" color="warning"></Chip>
 
@@ -102,6 +103,14 @@ function ApplicationStatus() {
 
     useEffect(() => {
         setTimeout(() => {
+            // select to database
+            // select from tripparticipant where user = currentUser and trip = currentTrip
+            // if no record - 'idle'
+            // if there is record - see 'approved'
+            // null - 'applied'
+            // true - 'confirmed'
+            // false - 'rejected'
+
             setState({
                 state: 'idle'
             })
@@ -117,7 +126,7 @@ function ApplicationStatus() {
 
         await (5000)
         setState({
-            state: Math.random() > 0.5 ? 'confirmed' : 'denied'
+            state: Math.random() > 0.5 ? 'confirmed' : 'rejected'
         })
     }
 
@@ -137,9 +146,9 @@ function ApplicationStatus() {
         )
     }
 
-    if (status.state === 'denied') {
+    if (status.state === 'rejected') {
         return (
-            <p>You has been denied for this trip</p>
+            <p>You has been rejected for this trip</p>
         )
     }
 
