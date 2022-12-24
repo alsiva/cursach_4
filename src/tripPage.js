@@ -46,13 +46,22 @@ function TripManagement() {
         <div>
             <h4>List of applicants</h4>
             <ul>
-                {applicants.map(applicant => (
-                    <li>
+                {applicants.map((applicant, index) => (
+                    <li key={applicant.id}>
                         <h5>{applicant.name}</h5>
                         <p>
                             {applicant.letter}
                         </p>
-                        <ParticipantStatus aplicantStatus={applicant.status}/>
+                        <ParticipantStatus
+                            approved={applicant.status}
+                            changeStatus={status => {
+                                setApplicants(prev => [
+                                    ...prev.slice(0, index),
+                                    {...applicant, status: status },
+                                    ...prev.slice(index+1)
+                                ])
+                            }}
+                        />
                     </li>
                 ))}
             </ul>
@@ -60,14 +69,13 @@ function TripManagement() {
     )
 }
 
-function ParticipantStatus({aplicantStatus}) {
+function ParticipantStatus({approved, changeStatus}) {
 
     //todo onChangeUpdateAplicantState
 
-    return (<Select
-            labelId="sampleLabelID"
-            id="sampleID"
-            value={aplicantStatus}
+    return (
+        <Select
+            value={approved}
             label="Aplicant status"
         >
             <MenuItem value='applied'>{'applied'}</MenuItem>
