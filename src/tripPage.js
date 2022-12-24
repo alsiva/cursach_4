@@ -1,5 +1,5 @@
-import React, {useState, useEffect } from 'react'
-import {Chip, CircularProgress} from "@mui/material";
+import React, {useState, useEffect} from 'react'
+import {Chip, CircularProgress, MenuItem, Select} from "@mui/material";
 
 function delay(ms) {
     return new Promise((resolve, reject) => {
@@ -19,7 +19,7 @@ export default function TripPage({trip, userInfo, back}) {
             <h4>Application status</h4>
             {trip.mainOrganizerID === userInfo.id
                 ? <TripManagement/>
-                : <ApplicationStatus /> }
+                : <ApplicationStatus/>}
 
         </div>
     )
@@ -31,13 +31,15 @@ function TripManagement() {
     useEffect(() => {
         setTimeout(() => {
             setApplicants([
-                { id: 2, name: 'john', letter: 'I really want to be there', status: 'denied'}
+                {id: 4, name: 'john', letter: 'I really want to be there', status: 'applied'},
+                {id: 5, name: 'chris', letter: 'I never was in Yagodnoe', status: 'denied'},
+                {id: 6, name: 'steven', letter: 'Im looking for adventures', status: 'confirmed'}
             ])
         }, 1000)
     }, [])
 
     if (applicants == null) {
-        return <CircularProgress />
+        return <CircularProgress/>
     }
 
     return (
@@ -50,15 +52,41 @@ function TripManagement() {
                         <p>
                             {applicant.letter}
                         </p>
-                        {applicant.status === 'confirmed'
-                            ? <Chip label="confirmed" color="success" />
-                            : <Chip label="applied" color="primary" />
-                        }
+                        <ParticipantStatus aplicantStatus={applicant.status}/>
                     </li>
                 ))}
             </ul>
         </div>
     )
+}
+
+function ParticipantStatus({aplicantStatus}) {
+
+    //todo onChangeUpdateAplicantState
+
+    return (<Select
+            labelId="sampleLabelID"
+            id="sampleID"
+            value={aplicantStatus}
+            label="Aplicant status"
+        >
+            <MenuItem value='applied'>{'applied'}</MenuItem>
+            <MenuItem value='confirmed'>{'confirmed'}</MenuItem>
+            <MenuItem value='denied'>{'denied'}</MenuItem>
+        </Select>
+    )
+
+
+    // if (aplicantStatus === 'confirmed') {
+    //     return <Chip label="confirmed" color="success" />
+    // } else if (aplicantStatus === 'applied') {
+    //     return <Chip label="applied" color="primary" />
+    // } else if (aplicantStatus === 'denied') {
+    //     return <Chip label="denied" color="error"/>
+    // }
+    // //return <Chip label="unknown status" color="warning"></Chip>
+
+
 }
 
 function ApplicationStatus() {
@@ -79,7 +107,7 @@ function ApplicationStatus() {
             state: 'applied'
         })
 
-        await(5000)
+        await (5000)
         setState({
             state: Math.random() > 0.5 ? 'confirmed' : 'denied'
         })
@@ -91,7 +119,7 @@ function ApplicationStatus() {
 
     if (status.state === 'idle') {
         return (
-            <ApplicationSubmit onSubmit={submitApplication} />
+            <ApplicationSubmit onSubmit={submitApplication}/>
         )
     }
 
