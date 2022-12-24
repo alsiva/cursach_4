@@ -1,5 +1,5 @@
 import React, {useState, useEffect } from 'react'
-import {CircularProgress} from "@mui/material";
+import {Chip, CircularProgress} from "@mui/material";
 
 function delay(ms) {
     return new Promise((resolve, reject) => {
@@ -9,13 +9,54 @@ function delay(ms) {
 
 
 export default function TripPage({trip, userInfo, back}) {
+
+
     return (
         <div>
             <button onClick={back}>back to trip list</button>
             <h3>{trip.title}</h3>
             <p>Starts on {trip.startDate}, ends on {trip.endDate}</p>
             <h4>Application status</h4>
-            <ApplicationStatus />
+            {trip.mainOrganizerID === userInfo.id
+                ? <TripManagement/>
+                : <ApplicationStatus /> }
+
+        </div>
+    )
+}
+
+function TripManagement() {
+    const [applicants, setApplicants] = useState(null)
+
+    useEffect(() => {
+        setTimeout(() => {
+            setApplicants([
+                { id: 2, name: 'john', letter: 'I really want to be there', status: 'denied'}
+            ])
+        }, 1000)
+    }, [])
+
+    if (applicants == null) {
+        return <CircularProgress />
+    }
+
+    return (
+        <div>
+            <h4>List of applicants</h4>
+            <ul>
+                {applicants.map(applicant => (
+                    <li>
+                        <h5>{applicant.name}</h5>
+                        <p>
+                            {applicant.letter}
+                        </p>
+                        {applicant.status === 'confirmed'
+                            ? <Chip label="confirmed" color="success" />
+                            : <Chip label="applied" color="primary" />
+                        }
+                    </li>
+                ))}
+            </ul>
         </div>
     )
 }

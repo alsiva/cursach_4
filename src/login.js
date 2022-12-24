@@ -7,10 +7,25 @@ function delay(ms) {
     })
 }
 
-const registeredUsers = new Map();
-registeredUsers.set("alex", "ivanov")
+const registeredUsers = new Map([
+    ["alex", {
+        password: "ivanov",
+        id: "1",
+        right: "organizer"
+    }],
+    ["ilya", {
+        password: "gerasim",
+        id: "2",
+        right: "ban"
+    }],
+    ["danya", {
+        password: "lena",
+        id: "3",
+        right: "participant"
+    }]
+]);
 
-export default function Login({ onLogin }) {
+export default function Login({onLogin}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -49,14 +64,23 @@ export default function Login({ onLogin }) {
             return
         }
 
-        const realPassword = registeredUsers.get(username)
+        const realPassword = registeredUsers.get(username).password
         if (realPassword !== password) {
             setError("Wrong credentials")
             return
         }
 
+        if (registeredUsers.get(username).right === "ban") {
+            setError("You are banned")
+            return
+        }
+
+        const userData = registeredUsers.get(username);
+
         const userInfo = {
+            id: 1,
             name: username,
+            right: userData.right
         }
 
         onLogin(userInfo)
@@ -142,7 +166,7 @@ export default function Login({ onLogin }) {
                 <Button
                     variant="outlined"
                     onClick={login}
-                    startIcon={isLoading ? <CircularProgress size={12} /> : null}
+                    startIcon={isLoading ? <CircularProgress size={12}/> : null}
                     disabled={isLoading}
                 >
                     Login
@@ -151,7 +175,7 @@ export default function Login({ onLogin }) {
                 <Button
                     variant="outlined"
                     onClick={register}
-                    startIcon={isRegistering ? <CircularProgress size={12} /> : null}
+                    startIcon={isRegistering ? <CircularProgress size={12}/> : null}
                     disabled={isRegistering}
                 >
                     Register
