@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Chip, CircularProgress, TextField} from "@mui/material";
 import TripPage from "./tripPage";
-import DatePicker from 'react-datepicker'
+
 import {delay} from "./utils";
+import {DesktopDatePicker} from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 export default function TripsList({userInfo, logout}) {
     const [selectedTrip, setSelectedTrip] = useState(null)
@@ -112,10 +114,11 @@ function Trips({setSelectedTrip, userInfo}) {
     )
 }
 
+const DATEPICKER_FORMAT = "DD/MM/YYYY"
 function CreateTrip({addTrip}) {
     const [title, setTitle] = useState("")
-    const [startDate, setStartDate] = useState(new Date())
-    const [endDate, setEndDate] = useState(new Date())
+    const [startDate, setStartDate] = useState(dayjs().add(1, 'week'))
+    const [endDate, setEndDate] = useState(startDate.add(1, 'week'))
     const [description, setDescription] = useState("")
 
 
@@ -131,17 +134,23 @@ function CreateTrip({addTrip}) {
                         setTitle(e.target.value)
                     }}
                 />
-                <DatePicker
-                    selected={startDate}
+                <DesktopDatePicker
+                    label="Start date"
+                    inputFormat={DATEPICKER_FORMAT}
+                    value={startDate}
                     onChange={(date) => {
                         setStartDate(date)
                     }}
+                    renderInput={(params) => <TextField {...params} />}
                 />
-                <DatePicker
-                    selected={endDate}
+                <DesktopDatePicker
+                    label="End date"
+                    inputFormat={DATEPICKER_FORMAT}
+                    value={endDate}
                     onChange={(date) => {
                         setEndDate(date)
                     }}
+                    renderInput={(params) => <TextField {...params} />}
                 />
                 <textarea
                     value={description}
