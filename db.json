@@ -1,0 +1,48 @@
+{
+  "users": [
+    {
+      "email": "alex@gmail.com",
+      "password": "$2a$10$EeXBVFqmzf0CsXKu2.YpAeLmGUGIp7IkgC.WK1lKLxV.YxwGJmwl2",
+      "name": "alex",
+      "right": "organizer",
+      "id": 1
+    },
+    {
+      "email": "biba@gmail.com",
+      "password": "$2a$10$5kv7KlLB6i1XD9n/5d/xAOAptCVVA2H3Oz5t/Z9hV3yL.YCEd7hVm",
+      "name": "biba",
+      "right": "participant",
+      "id": 2
+    },
+    {
+      "email": "gerasim@gmail.com",
+      "password": "$2a$10$ihPRwTB84meRlErg/HINruNxdamXjOEadHlVXBWLDVSi.URjajITe",
+      "name": "gerasim",
+      "right": "participant",
+      "id": 3
+    },
+    {
+      "email": "boba@gmail.com",
+      "password": "$2a$10$4qk/DXz78cM7v1eVM3anveo3KLyCDd/Uz90X98GDaJ8YIsS.VdCqW",
+      "name": "biba",
+      "right": "participant",
+      "id": 4
+    }
+  ],
+  "trips": [
+    {
+      "id": 1,
+      "title": "Первый весенний выезд",
+      "startDate": "1 марта 2023",
+      "endDate": "7 марта 2023",
+      "mainOrganizerID": 1
+    },
+    {
+      "id": 4,
+      "title": "В середине лета",
+      "startDate": "7 июля 2023",
+      "endDate": "21 июля 2023",
+      "mainOrganizerID": 4
+    }
+  ]
+}

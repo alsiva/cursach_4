@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Button, Chip, CircularProgress, TextField} from "@mui/material";
+import {Button, Chip, CircularProgress, TextField} from "@mui/material";
 import TripPage from "./tripPage";
 import DatePicker from 'react-datepicker'
 
 export default function TripsList({userInfo, logout}) {
     const [selectedTrip, setSelectedTrip] = useState(null)
+
 
     return (
         <div className={"header"}>
@@ -19,26 +20,20 @@ export default function TripsList({userInfo, logout}) {
     )
 }
 
+
 function Trips({setSelectedTrip, userInfo}) {
     const [trips, setTrips] = useState(null)
+
+
+
     useEffect(() => {
         setTimeout(() => {
-            setTrips([
-                {
-                    id: 1,
-                    title: 'Первый весенний выезд',
-                    startDate: '1 марта 2023',
-                    endDate: '7 марта 2023',
-                    mainOrganizerID: 1
+            fetch('/trips', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                {
-                    id: 4,
-                    title: 'В середине лета',
-                    startDate: '7 июля 2023',
-                    endDate: '21 июля 2023',
-                    mainOrganizerID: 4,
-                },
-            ])
+            }).then(response => response.json()).then(trips => setTrips(trips))
         }, 1000)
     }, [])
 
@@ -52,6 +47,23 @@ function Trips({setSelectedTrip, userInfo}) {
         console.log(startDate)
         console.log(endDate)
 
+        const response = await fetch('/trips', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: title,
+                startDate: startDate,
+                endDate: endDate,
+                mainOrganizerID: userInfo.id
+            }),
+        })
+
+        const json = await response.json()
+        console.log(json)
+
+
         setTrips(prev => [
             ...prev, {
                 id: prev.length + 1,
@@ -63,7 +75,19 @@ function Trips({setSelectedTrip, userInfo}) {
         ])
     }
 
-    async function deleteTrip(tripIndex) {
+    async function deleteTrip(tripIndex, tripID) {
+
+        const response = await fetch('/trips/' + tripID, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+
+        const json = await response.json()
+        console.log(json)
+
+
         setTrips(prev => [
             ...prev.slice(0, tripIndex), ...prev.slice(tripIndex + 1)
         ])
@@ -82,7 +106,9 @@ function Trips({setSelectedTrip, userInfo}) {
                             <Chip label="admin" color="success"/>
                         )}
                         <button onClick={() => setSelectedTrip(trip)}>View trip</button>
-                        <button onClick={() => deleteTrip(trips.indexOf(trip))}>DeleteTrip</button>
+                        {trip.mainOrganizerID === userInfo.id && (
+                            <button onClick={() => deleteTrip(trips.indexOf(trip), trip.id)}>DeleteTrip</button>
+                        )}
                     </li>
                 ))}
             </ul>

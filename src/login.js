@@ -7,27 +7,10 @@ function delay(ms) {
     })
 }
 
-const registeredUsers = new Map([
-    ["alex", {
-        password: "ivanov",
-        id: "1",
-        right: "organizer"
-    }],
-    ["ilya", {
-        password: "gerasim",
-        id: "2",
-        right: "ban"
-    }],
-    ["danya", {
-        password: "lena",
-        id: "3",
-        right: "participant"
-    }]
-]);
-
 export default function Login({onLogin}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
     const [error, setError] = useState("");
@@ -37,50 +20,41 @@ export default function Login({onLogin}) {
         setIsLoading(true)
         setIsRegistering(false)
         setError("")
-        /*
-        const response = await fetch('http://localhost:3100/users', {
-            method: 'GET',
+
+        const response = await fetch('/login', {
+            method: 'POST',
             headers: {
-                'Authorization': 'Basic ' + btoa(username + ":" + password),
-                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
             },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
         })
 
-        setIsLoading(false)
-        if (response.status === 401) {
-            setError("Wrong credentials")
-            return;
-        }
-        setError("")
 
-        // todo: use later
-        const userInfo = await response.json()
-        */
+        if (response.status === 400) {
+            setError(response.statusText)
+            setIsLoading(false)
+            return
+        }
+
         await delay(1000)
         setIsLoading(false)
 
-        if (!registeredUsers.has(username)) {
-            setError("No such user")
-            return
-        }
+        const json = await response.json()
 
-        const realPassword = registeredUsers.get(username).password
-        if (realPassword !== password) {
-            setError("Wrong credentials")
-            return
-        }
 
-        if (registeredUsers.get(username).right === "ban") {
+
+        if (json.user.right === "ban") {
             setError("You are banned")
             return
         }
 
-        const userData = registeredUsers.get(username);
-
         const userInfo = {
-            id: 1,
-            name: username,
-            right: userData.right
+            id: json.user.id,
+            name: json.user.name,
+            right: json.user.right
         }
 
         onLogin(userInfo)
@@ -91,30 +65,30 @@ export default function Login({onLogin}) {
         await delay(1000)
         setIsRegistering(false)
 
-        if (registeredUsers.has(username)) {
-            setError(`user ${username} already exists`)
-            return
-        }
+        // if (registeredUsers.has(username)) {
+        //     setError(`user ${username} already exists`)
+        //     return
+        // }
+        //
+        // setError("")
+        //
+        // registeredUsers.set(username, password)
+        //
 
-        setError("")
 
-        registeredUsers.set(username, password)
-
-        const userInfo = {
-            name: username,
-        }
-
-        onLogin(userInfo)
-
-        /*const response = await fetch('/users', {
+        const response = await fetch('/users', {
             method: 'POST',
             headers: {
-                'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
             },
-            body: JSON.stringify({ name: username, password: password }),
+            body: JSON.stringify({
+                name: username,
+                email: email,
+                password: password,
+                right: "participant"}),
         })
+
+
 
         if (response.status === 409) {
             setIsRegistering(false)
@@ -130,7 +104,28 @@ export default function Login({onLogin}) {
             setError(error)
 
             return
-        }*/
+        }
+
+        if (response.status === 500) {
+
+
+            setIsRegistering(false)
+            setError("Don't try to register again")
+
+            return
+        }
+
+        const json = await response.json()
+
+
+        const userInfo = {
+            id: json.user.id,
+            name: json.user.name,
+            right: json.user.right
+        }
+
+        onLogin(userInfo)
+
     }
 
     return (
@@ -151,6 +146,15 @@ export default function Login({onLogin}) {
                     onChange={(e) => {
                         setError("")
                         setUsername(e.target.value)
+                    }}
+                />
+                <TextField
+                    label="Email"
+                    variant="outlined"
+                    value={email}
+                    onChange={(e) => {
+                        setError("")
+                        setEmail(e.target.value)
                     }}
                 />
                 <TextField
