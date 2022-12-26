@@ -1,11 +1,7 @@
 import React, {useState} from 'react';
 import {Alert, Button, CircularProgress, TextField} from "@mui/material";
+import {delay} from "./utils";
 
-function delay(ms) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms)
-    })
-}
 
 export default function Login({onLogin}) {
     const [username, setUsername] = useState("");
@@ -65,16 +61,6 @@ export default function Login({onLogin}) {
         await delay(1000)
         setIsRegistering(false)
 
-        // if (registeredUsers.has(username)) {
-        //     setError(`user ${username} already exists`)
-        //     return
-        // }
-        //
-        // setError("")
-        //
-        // registeredUsers.set(username, password)
-        //
-
 
         const response = await fetch('/api/users', {
             method: 'POST',
@@ -108,8 +94,6 @@ export default function Login({onLogin}) {
         }
 
         if (response.status === 500) {
-
-
             setIsRegistering(false)
             setError("Don't try to register again")
 

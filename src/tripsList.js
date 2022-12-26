@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Chip, CircularProgress, TextField} from "@mui/material";
 import TripPage from "./tripPage";
 import DatePicker from 'react-datepicker'
+import {delay} from "./utils";
 
 export default function TripsList({userInfo, logout}) {
     const [selectedTrip, setSelectedTrip] = useState(null)
@@ -20,21 +21,24 @@ export default function TripsList({userInfo, logout}) {
     )
 }
 
+async function getTrips() {
+    await delay(1000)
+
+    const response = await fetch('/api/trips', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+
+    return await response.json()
+}
 
 function Trips({setSelectedTrip, userInfo}) {
     const [trips, setTrips] = useState(null)
 
-
-
     useEffect(() => {
-        setTimeout(() => {
-            fetch('/api/trips', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            }).then(response => response.json()).then(trips => setTrips(trips))
-        }, 1000)
+        getTrips().then(json => setTrips(json))
     }, [])
 
     if (trips == null) {
@@ -42,11 +46,6 @@ function Trips({setSelectedTrip, userInfo}) {
     }
 
     async function addTrip(title, description, startDate, endDate) {
-        console.log(title)
-        console.log(description)
-        console.log(startDate)
-        console.log(endDate)
-
         const response = await fetch('/api/trips', {
             method: 'POST',
             headers: {
@@ -61,36 +60,29 @@ function Trips({setSelectedTrip, userInfo}) {
         })
 
         const json = await response.json()
-        console.log(json)
-
 
         setTrips(prev => [
             ...prev, {
-                id: prev.length + 1,
-                title: title,
-                startDate: startDate.toString(),
-                endDate: endDate.toString(),
+                id: json.id,
+                title: json.title,
+                startDate: json.startDate,
+                endDate: json.endDate,
                 mainOrganizerID: userInfo.id
             }
         ])
     }
 
-    async function deleteTrip(tripIndex, tripID) {
-
-        const response = await fetch('/api/trips/' + tripID, {
+    async function deleteTrip(tripToRemoveId) {
+        const response = await fetch('/api/trips/' + tripToRemoveId, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             }
         })
 
-        const json = await response.json()
-        console.log(json)
+        await response.json()
 
-
-        setTrips(prev => [
-            ...prev.slice(0, tripIndex), ...prev.slice(tripIndex + 1)
-        ])
+        setTrips(prev => prev.filter(trip => trip.id !== tripToRemoveId))
 
     }
 
@@ -107,7 +99,7 @@ function Trips({setSelectedTrip, userInfo}) {
                         )}
                         <button onClick={() => setSelectedTrip(trip)}>View trip</button>
                         {trip.mainOrganizerID === userInfo.id && (
-                            <button onClick={() => deleteTrip(trips.indexOf(trip), trip.id)}>DeleteTrip</button>
+                            <button onClick={() => deleteTrip(trip.id)}>DeleteTrip</button>
                         )}
                     </li>
                 ))}
