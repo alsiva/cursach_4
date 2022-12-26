@@ -41,7 +41,6 @@ export default function Login({onLogin}) {
         const json = await response.json()
 
 
-
         if (json.user.right === "ban") {
             setError("You are banned")
             return

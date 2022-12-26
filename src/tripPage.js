@@ -1,11 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {CircularProgress, MenuItem, Select} from "@mui/material";
-
-function delay(ms) {
-    return new Promise((resolve, reject) => {
-        setTimeout(resolve, ms)
-    })
-}
+import {delay} from "./utils";
 
 
 export default function TripPage({trip, userInfo, back}) {
@@ -17,8 +12,8 @@ export default function TripPage({trip, userInfo, back}) {
             <h4>Application status</h4>
             {trip.mainOrganizerID === userInfo.id
                 ? <TripManagement tripId={trip.id}/>
-                : <ApplicationStatus/>}
-
+                : <ApplicationStatus tripId={trip.id} userId={userInfo.id}/>
+            }
         </div>
     )
 }
@@ -61,11 +56,12 @@ function TripManagement({ tripId }) {
                                 {letter}
                             </p>
                             <ParticipantStatus
-                                approved={application.status}
+                                id={application.id}
+                                state={application.state}
                                 changeStatus={status => {
                                     setApplications(prev => [
                                         ...prev.slice(0, index),
-                                        {...application, status: status},
+                                        {...application, state: status},
                                         ...prev.slice(index + 1)
                                     ])
                                 }}
@@ -78,16 +74,40 @@ function TripManagement({ tripId }) {
     )
 }
 
-function ParticipantStatus({approved, changeStatus}) {
 
-    //todo onChangeUpdateAplicantState
+async function changeParticipantStatus(id, newState) {
+    const response = await fetch(`/api/participants/${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            state: newState,
+        }),
+    })
+
+    return await response.json()
+}
+
+
+function ParticipantStatus({state, changeStatus, id}) {
+    const [isLoading, setIsLoading] = useState(false)
+
+    if (isLoading) {
+        return <CircularProgress />
+    }
 
     return (
         <Select
-            value={approved}
+            value={state}
             label="Aplicant status"
             onChange={e => {
-                changeStatus(e.target.value)
+                setIsLoading(true)
+                changeParticipantStatus(id, e.target.value).then(application => {
+                    changeStatus(application.state)
+                    setIsLoading(false)
+                })
+
             }}
         >
             <MenuItem value='applied'>{'applied'}</MenuItem>
@@ -109,36 +129,52 @@ function ParticipantStatus({approved, changeStatus}) {
 
 }
 
-function ApplicationStatus() {
-    const [status, setState] = useState(null)
+
+async function getApplicationStatus(tripId, userId) {
+    await delay(500)
+
+    const response = await fetch(`/api//participants?tripId=${tripId}&userId=${userId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+
+    const array = await response.json()
+    if (array.length === 0) {
+        return { state: 'idle' }
+    } else {
+        return array[0]
+    }
+}
+function ApplicationStatus({ tripId, userId }) {
+    const [status, setStatus] = useState(null)
 
     useEffect(() => {
-        setTimeout(() => {
-            // select to database
-            // select from tripparticipant where user = currentUser and trip = currentTrip
-            // if no record - 'idle'
-            // if there is record - see 'approved'
-            // null - 'applied'
-            // true - 'confirmed'
-            // false - 'rejected'
+        getApplicationStatus(tripId, userId).then(status => {
+            setStatus(status)
+        })
+    }, [tripId, userId])
 
-            setState({
-                state: 'idle'
-            })
-        }, 1000)
-    }, [])
-
-    async function submitApplication(text) {
-        setState(null)
+    async function submitApplication(letter) {
+        setStatus(null)
         await delay(500)
-        setState({
-            state: 'applied'
+
+        const response = await fetch('/api/participants', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                tripId: tripId,
+                userId: userId,
+                letter: letter,
+                state: 'applied',
+            }),
         })
 
-        await (5000)
-        setState({
-            state: Math.random() > 0.5 ? 'confirmed' : 'rejected'
-        })
+        const status = await response.json()
+        setStatus(status)
     }
 
     if (status === null) {
