@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Alert, Button, CircularProgress, TextField} from "@mui/material";
 
 function delay(ms) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         setTimeout(resolve, ms)
     })
 }
@@ -21,7 +21,7 @@ export default function Login({onLogin}) {
         setIsRegistering(false)
         setError("")
 
-        const response = await fetch('/login', {
+        const response = await fetch('/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -76,7 +76,7 @@ export default function Login({onLogin}) {
         //
 
 
-        const response = await fetch('/users', {
+        const response = await fetch('/api/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -85,7 +85,8 @@ export default function Login({onLogin}) {
                 name: username,
                 email: email,
                 password: password,
-                right: "participant"}),
+                right: "participant"
+            }),
         })
 
 

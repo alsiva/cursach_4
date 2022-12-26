@@ -24,7 +24,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "json-server -w db.json -p 3100 -m ./node_modules/json-server-auth"
+    "server": "json-server -w db.json -p 3100 --routes routes.json -m ./node_modules/json-server-auth"
   },
   "eslintConfig": {
     "extends": [

@@ -28,7 +28,7 @@ function Trips({setSelectedTrip, userInfo}) {
 
     useEffect(() => {
         setTimeout(() => {
-            fetch('/trips', {
+            fetch('/api/trips', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -47,7 +47,7 @@ function Trips({setSelectedTrip, userInfo}) {
         console.log(startDate)
         console.log(endDate)
 
-        const response = await fetch('/trips', {
+        const response = await fetch('/api/trips', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ function Trips({setSelectedTrip, userInfo}) {
 
     async function deleteTrip(tripIndex, tripID) {
 
-        const response = await fetch('/trips/' + tripID, {
+        const response = await fetch('/api/trips/' + tripID, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
