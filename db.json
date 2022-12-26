@@ -51,5 +51,22 @@
       "mainOrganizerID": 1,
       "id": 5
     }
+  ],
+  "participants": [
+    {
+      "tripId": 1,
+      "userId": 1,
+      "letter": "I really want to be there"
+    },
+    {
+      "tripId": 2,
+      "userId": 1,
+      "letter": "I've never been to Yagodnoe"
+    },
+    {
+      "tripId": 1,
+      "userId": 2,
+      "letter": "I'm looking for adventures"
+    }
   ]
 }

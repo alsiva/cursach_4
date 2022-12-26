@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react'
-import {Chip, CircularProgress, MenuItem, Select} from "@mui/material";
+import React, {useEffect, useState} from 'react'
+import {CircularProgress, MenuItem, Select} from "@mui/material";
 
 function delay(ms) {
     return new Promise((resolve, reject) => {
@@ -16,52 +16,63 @@ export default function TripPage({trip, userInfo, back}) {
             <p>Starts on {trip.startDate}, ends on {trip.endDate}</p>
             <h4>Application status</h4>
             {trip.mainOrganizerID === userInfo.id
-                ? <TripManagement/>
+                ? <TripManagement tripId={trip.id}/>
                 : <ApplicationStatus/>}
 
         </div>
     )
 }
 
-function TripManagement() {
-    const [applicants, setApplicants] = useState(null)
+
+async function getTripApplications(tripId) {
+    await delay(500)
+
+    const response = await fetch('/api/participants?_expand=user&tripId=' + tripId, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+
+    return await response.json()
+}
+function TripManagement({ tripId }) {
+    const [applications, setApplications] = useState(null)
 
     useEffect(() => {
-        setTimeout(() => {
-            setApplicants([
-                {id: 4, name: 'john', letter: 'I really want to be there', status: 'applied' },
-                {id: 5, name: 'chris', letter: 'I never was in Yagodnoe', status: 'rejected' },
-                {id: 6, name: 'steven', letter: 'Im looking for adventures', status: 'confirmed' }
-            ])
-        }, 1000)
-    }, [])
+        getTripApplications(tripId).then(applications => setApplications(applications))
+    }, [tripId])
 
-    if (applicants == null) {
+    if (applications == null) {
         return <CircularProgress/>
     }
 
     return (
         <div>
-            <h4>List of applicants</h4>
+            <h4>List of applications</h4>
             <ul>
-                {applicants.map((applicant, index) => (
-                    <li key={applicant.id}>
-                        <h5>{applicant.name}</h5>
-                        <p>
-                            {applicant.letter}
-                        </p>
-                        <ParticipantStatus
-                            approved={applicant.status}
-                            changeStatus={status => {
-                                setApplicants(prev => [
-                                    ...prev.slice(0, index),
-                                    {...applicant, status: status },
-                                    ...prev.slice(index+1)
-                                ])
-                            }}
-                        />
-                    </li>
-                ))}
+                {applications.map((application, index) => {
+                    const { user, letter, tripId, userId } = application
+
+                    return (
+                        <li key={tripId + ":" + userId}>
+                            <h5>{user.name}</h5>
+                            <p>
+                                {letter}
+                            </p>
+                            <ParticipantStatus
+                                approved={application.status}
+                                changeStatus={status => {
+                                    setApplications(prev => [
+                                        ...prev.slice(0, index),
+                                        {...application, status: status},
+                                        ...prev.slice(index + 1)
+                                    ])
+                                }}
+                            />
+                        </li>
+                    );
+                })}
             </ul>
         </div>
     )
