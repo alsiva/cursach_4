@@ -18,18 +18,38 @@ export default function TripsList({userInfo, logout}) {
 }
 
 function TripListView({ userInfo }) {
-    const [selectedTrip, setSelectedTrip] = useState(null)
-    const [selectedSettlement, setSelectedSettlement] = useState(null)
+    const [current, setCurrent] = useState({ page: 'trips'})
 
-    if (selectedTrip !== null) {
-        return <TripApplication trip={selectedTrip} userInfo={userInfo} back={() => setSelectedTrip(null)}/>
+    function returnToMainPage() {
+        setCurrent({ page: 'trips' })
     }
 
-    if (selectedSettlement !== null) {
-        return <TripSettlement trip={selectedSettlement} userInfo={userInfo} back={() => setSelectedSettlement(null)}/>
+    switch(current.page) {
+        case 'trips':
+            return (
+                <Trips
+                    setSelectedTrip={trip => setCurrent({ page: 'application', trip: trip})}
+                    userInfo={userInfo}
+                    setSelectedSettlement={trip => setCurrent({ page: 'settlement', trip: trip })}
+                />
+            )
+        case 'application':
+            return (
+                <TripApplication
+                    trip={current.trip}
+                    userInfo={userInfo}
+                    back={returnToMainPage}
+                />
+            )
+        case 'settlement':
+            return (
+                <TripSettlement
+                    trip={current.trip}
+                    userInfo={userInfo}
+                    back={returnToMainPage}
+                />
+            )
     }
-
-    return <Trips setSelectedTrip={setSelectedTrip} userInfo={userInfo} setSelectedSettlement={setSelectedSettlement}/>
 }
 
 async function getTrips() {
