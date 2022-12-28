@@ -3,7 +3,7 @@ import {CircularProgress, MenuItem, Select} from "@mui/material";
 import {delay} from "./utils";
 
 
-export default function TripPage({trip, userInfo, back}) {
+export default function TripApplication({trip, userInfo, back}) {
     return (
         <div>
             <button onClick={back}>back to trip list</button>
@@ -76,6 +76,8 @@ function TripManagement({ tripId }) {
 
 
 async function changeParticipantStatus(id, newState) {
+
+
     const response = await fetch(`/api/participants/${id}`, {
         method: 'PATCH',
         headers: {
@@ -85,6 +87,8 @@ async function changeParticipantStatus(id, newState) {
             state: newState,
         }),
     })
+
+
 
     return await response.json()
 }

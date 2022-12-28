@@ -50,6 +50,13 @@
       "endDate": "2022-06-13T21:06:34.000Z",
       "mainOrganizerID": 1,
       "id": 5
+    },
+    {
+      "title": "Ya.Sport",
+      "startDate": "2023-07-13T21:00:00.000Z",
+      "endDate": "2023-07-27T21:00:00.000Z",
+      "mainOrganizerID": 1,
+      "id": 6
     }
   ],
   "participants": [
@@ -57,8 +64,40 @@
       "tripId": 1,
       "userId": 3,
       "letter": "I want to dance with Alyoukov",
-      "state": "confirmed",
+      "state": "applied",
       "id": 1
+    },
+    {
+      "tripId": 1,
+      "userId": 2,
+      "letter": "I want to dance with Gerasim",
+      "state": "applied",
+      "id": 2
+    }
+  ],
+  "houses": [
+    {
+      "id": 10,
+      "name": "B10",
+      "capacity": 7
+    },
+    {
+      "id": 11,
+      "name": "B11",
+      "capacity": 7
+    },
+    {
+      "id": 12,
+      "name": "B12",
+      "capacity": 7
+    }
+  ],
+  "settlement": [
+    {
+      "id": 1,
+      "userId": 2,
+      "tripId": 1,
+      "houseId": 11
     }
   ]
 }

@@ -1,26 +1,35 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Chip, CircularProgress, TextField} from "@mui/material";
-import TripPage from "./tripPage";
+import TripApplication from "./tripApplication";
 
 import {delay} from "./utils";
 import {DesktopDatePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import TripSettlement from "./tripSettlement";
 
 export default function TripsList({userInfo, logout}) {
-    const [selectedTrip, setSelectedTrip] = useState(null)
-
-
     return (
         <div className={"header"}>
             <h1>Hi, {userInfo.name}</h1>
             <button onClick={logout}>logout</button>
-
-            {selectedTrip == null
-                ? <Trips setSelectedTrip={setSelectedTrip} userInfo={userInfo}/>
-                : <TripPage trip={selectedTrip} userInfo={userInfo} back={() => setSelectedTrip(null)}/>
-            }
+            <TripListView userInfo={userInfo}/>
         </div>
     )
+}
+
+function TripListView({ userInfo }) {
+    const [selectedTrip, setSelectedTrip] = useState(null)
+    const [selectedSettlement, setSelectedSettlement] = useState(null)
+
+    if (selectedTrip !== null) {
+        return <TripApplication trip={selectedTrip} userInfo={userInfo} back={() => setSelectedTrip(null)}/>
+    }
+
+    if (selectedSettlement !== null) {
+        return <TripSettlement trip={selectedSettlement} userInfo={userInfo} back={() => setSelectedSettlement(null)}/>
+    }
+
+    return <Trips setSelectedTrip={setSelectedTrip} userInfo={userInfo} setSelectedSettlement={setSelectedSettlement}/>
 }
 
 async function getTrips() {
@@ -36,7 +45,7 @@ async function getTrips() {
     return await response.json()
 }
 
-function Trips({setSelectedTrip, userInfo}) {
+function Trips({setSelectedTrip, userInfo, setSelectedSettlement}) {
     const [trips, setTrips] = useState(null)
 
     useEffect(() => {
@@ -99,7 +108,8 @@ function Trips({setSelectedTrip, userInfo}) {
                         {trip.mainOrganizerID === userInfo.id && (
                             <Chip label="admin" color="success"/>
                         )}
-                        <button onClick={() => setSelectedTrip(trip)}>View trip</button>
+                        <button onClick={() => setSelectedSettlement(trip)}>View settlement</button>
+                        <button onClick={() => setSelectedTrip(trip)}>View application</button>
                         {trip.mainOrganizerID === userInfo.id && (
                             <button onClick={() => deleteTrip(trip.id)}>DeleteTrip</button>
                         )}
