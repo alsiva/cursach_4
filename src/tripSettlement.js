@@ -79,7 +79,7 @@ function SettlementManagement({ tripId }) {
 async function getTripParticipants(tripId) {
     await delay(500)
 
-    const response = await fetch('/api/participants?_expand=user&state=confirmed&tripId=' + tripId, {
+    const response = await fetch('/api/applications?_expand=user&state=confirmed&tripId=' + tripId, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -89,7 +89,7 @@ async function getTripParticipants(tripId) {
     return await response.json()
 }
 
-function SettlementParticipant(tripId, houses) {
+function SettlementParticipant({tripId, houses}) {
     return <div>There will be settlement for participants</div>
 }
 

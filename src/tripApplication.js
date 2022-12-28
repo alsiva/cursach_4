@@ -22,7 +22,7 @@ export default function TripApplication({trip, userInfo, back}) {
 async function getTripApplications(tripId) {
     await delay(500)
 
-    const response = await fetch('/api/participants?_expand=user&tripId=' + tripId, {
+    const response = await fetch('/api/applications?_expand=user&tripId=' + tripId, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ function TripManagement({ tripId }) {
 async function changeParticipantStatus(id, newState) {
 
 
-    const response = await fetch(`/api/participants/${id}`, {
+    const response = await fetch(`/api/applications/${id}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ function ParticipantStatus({state, changeStatus, id}) {
 async function getApplicationStatus(tripId, userId) {
     await delay(500)
 
-    const response = await fetch(`/api//participants?tripId=${tripId}&userId=${userId}`, {
+    const response = await fetch(`/api/applications?tripId=${tripId}&userId=${userId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -164,7 +164,7 @@ function ApplicationStatus({ tripId, userId }) {
         setStatus(null)
         await delay(500)
 
-        const response = await fetch('/api/participants', {
+        const response = await fetch('/api/applications', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
