@@ -64,14 +64,14 @@
       "tripId": 1,
       "userId": 3,
       "letter": "I want to dance with Alyoukov",
-      "state": "applied",
+      "state": "confirmed",
       "id": 1
     },
     {
       "tripId": 1,
       "userId": 2,
       "letter": "I want to dance with Gerasim",
-      "state": "applied",
+      "state": "confirmed",
       "id": 2
     }
   ],
@@ -92,7 +92,7 @@
       "capacity": 7
     }
   ],
-  "settlement": [
+  "settlements": [
     {
       "id": 1,
       "userId": 2,
