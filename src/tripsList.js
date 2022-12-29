@@ -6,6 +6,7 @@ import {delay} from "./utils";
 import {DesktopDatePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import TripSettlement from "./tripSettlement";
+import TripSchedule from "./TripsSchedule";
 
 export default function TripsList({userInfo, logout}) {
     return (
@@ -31,6 +32,7 @@ function TripListView({ userInfo }) {
                     setSelectedTrip={trip => setCurrent({ page: 'application', trip: trip})}
                     userInfo={userInfo}
                     setSelectedSettlement={trip => setCurrent({ page: 'settlement', trip: trip })}
+                    setSelectedSchedule={trip => setCurrent({page: 'schedule', trip: trip})}
                 />
             )
         case 'application':
@@ -44,6 +46,14 @@ function TripListView({ userInfo }) {
         case 'settlement':
             return (
                 <TripSettlement
+                    trip={current.trip}
+                    userInfo={userInfo}
+                    back={returnToMainPage}
+                />
+            )
+        case 'schedule':
+            return (
+                <TripSchedule
                     trip={current.trip}
                     userInfo={userInfo}
                     back={returnToMainPage}
@@ -65,7 +75,7 @@ async function getTrips() {
     return await response.json()
 }
 
-function Trips({setSelectedTrip, userInfo, setSelectedSettlement}) {
+function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSchedule}) {
     const [trips, setTrips] = useState(null)
 
     useEffect(() => {
@@ -130,6 +140,7 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement}) {
                         )}
                         <button onClick={() => setSelectedSettlement(trip)}>View settlement</button>
                         <button onClick={() => setSelectedTrip(trip)}>View application</button>
+                        <button onClick={() => setSelectedSchedule(trip)}>View schedule</button>
                         {trip.mainOrganizerID === userInfo.id && (
                             <button onClick={() => deleteTrip(trip.id)}>DeleteTrip</button>
                         )}
