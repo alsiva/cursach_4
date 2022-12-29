@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {CircularProgress} from "@mui/material";
+import {Box, Chip, CircularProgress, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import {delay} from "./utils";
 
 
@@ -58,6 +58,7 @@ function SettlementManagement({ tripId }) {
         }
     })
 
+    const housesWithCapacity = info.filter(it => it.settled.length < it.house.capacity).map(it => it.house)
 
     return (
         <div>
@@ -68,9 +69,14 @@ function SettlementManagement({ tripId }) {
                             <h4>{house.name}</h4>
                             <ul>
                                 {settled.map(settlement => (
-                                    <li key={settlement.id}>
-                                        {settlement.user.name}
-                                    </li>
+                                    <Chip
+                                        key={settlement.id}
+                                        label={settlement.user.name}
+                                        variant="outlined"
+                                        onClick={() => {
+                                            console.log(`removing ${settlement.user.name}`)
+                                        }}
+                                    />
                                 ))}
                             </ul>
                         </li>
@@ -82,9 +88,37 @@ function SettlementManagement({ tripId }) {
                 <ul>
                     {notSettled.map((participant) => {
                         return (
-                            <li key={participant.id}>
-                                {participant.name}
-                            </li>
+                            <Box key={participant.id} sx={{ maxWidth: 120 }}>
+                                <FormControl fullWidth>
+                                    <InputLabel id={participant.id.toString()}>{participant.name}</InputLabel>
+                                    <Select
+                                        labelId={participant.id.toString()}
+                                        key={participant.id}
+                                        value={''}
+                                        label={participant.name}
+                                        onChange={e => {
+                                            const houseId = Number(e.target.value)
+
+                                            // todo: query to backend
+                                            setSettlements(prev => {
+                                                const newSettlement = {
+                                                    "id": 100,
+                                                    "tripId": tripId,
+                                                    "houseId": houseId,
+                                                    "userId": participant.id,
+                                                    user: participant,
+                                                }
+
+                                                return [...prev, newSettlement]
+                                            })
+                                        }}
+                                    >
+                                        {housesWithCapacity.map(house => (
+                                            <MenuItem key={house.id} value={house.id}>{house.name}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Box>
                         )
                     })}
                 </ul>
