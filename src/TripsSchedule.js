@@ -142,7 +142,7 @@ function CreateSchedule({addSchedule}) {
                 />
                 <Button
                     variant="outlined"
-                    onClick={() => addSchedule(startTime, endTime, description)}
+                    onClick={() => addSchedule(startTime.format(TIMESTAMP_FORMAT), endTime.format(TIMESTAMP_FORMAT), description)}
                 >
                     Add Schedule
                 </Button>
