@@ -106,5 +106,27 @@
       "id": 2
     }
   ],
-  "schedule": []
+  "schedule": [
+    {
+      "tripId": 1,
+      "startTime": "2022-12-30T13:55:45.538Z",
+      "endTime": "2022-12-30T13:55:45.538Z",
+      "description": "Something",
+      "id": 1
+    },
+    {
+      "tripId": 1,
+      "startTime": "2022-12-30T13:56:20.236Z",
+      "endTime": "2022-12-30T13:56:20.236Z",
+      "description": "Go to fuck",
+      "id": 2
+    },
+    {
+      "tripId": 1,
+      "startTime": "2022-12-30T13:56:20.236Z",
+      "endTime": "2022-12-30T13:56:20.236Z",
+      "description": "Go home",
+      "id": 3
+    }
+  ]
 }

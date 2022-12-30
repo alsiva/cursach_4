@@ -27,8 +27,6 @@ async function getSchedule(tripId) {
 export default function TripSchedule({trip, userInfo, back}) {
     const [schedules, setSchedules] = useState(null)
 
-
-
     useEffect(() => {
         getSchedule(trip.id).then(schedule => setSchedules(schedule))
     }, [trip.id])
@@ -44,18 +42,21 @@ export default function TripSchedule({trip, userInfo, back}) {
                 {schedules.map(schedule => (
                     <li key={schedule.id}>
                         <h3>{schedule.startTime} - {schedule.endTime}:
-                            <button onClick={() => deleteSchedule(schedule.id)}>Delete</button>
+                            {userInfo.right === 'organizer' &&
+                                <button onClick={() => deleteSchedule(schedule.id)}>Delete</button>
+                            }
                         </h3>
                         <h5>{schedule.description}</h5>
-
                     </li>
                 ))}
             </ul>
 
-            <h1>Adding schedule</h1>
-            <CreateSchedule addSchedule={addSchedule}/>
-
-
+            {userInfo.right === 'organizer' &&
+                <div>
+                    <h1>Adding schedule</h1>
+                    <CreateSchedule addSchedule={addSchedule}/>
+                </div>
+            }
         </div>
     )
 
@@ -73,11 +74,6 @@ export default function TripSchedule({trip, userInfo, back}) {
     }
 
     async function addSchedule(startTime, endTime, description) {
-
-        console.log(`StartTime: ${startTime} `)
-        console.log(`EndTime: ${endTime} `)
-        console.log(`Description: ${description} `)
-
 
         const response = await fetch('/api/schedule', {
             method: 'POST',
@@ -99,21 +95,23 @@ export default function TripSchedule({trip, userInfo, back}) {
         setSchedules(prev => [
             ...prev, {
                 id: json.id,
-                starTime: json.startTime,
+                startTime: json.startTime,
                 endTime: json.endTime,
                 description: json.description
             }
         ])
+
+        console.log('schedules')
+        console.log(schedules)
     }
 }
 
 const TIMESTAMP_FORMAT = "DD/MM/YYYY HH:mm:ss"
+
 function CreateSchedule({addSchedule}) {
     const [startTime, setStartTime] = useState(dayjs())
     const [endTime, setEndTime] = useState(dayjs())
     const [description, setDescription] = useState("")
-
-
 
 
     return (
