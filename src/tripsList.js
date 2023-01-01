@@ -3,7 +3,7 @@ import {Button, Chip, CircularProgress, Link, Stack, TextField} from "@mui/mater
 import TripApplication from "./tripApplication";
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import LogoutIcon from '@mui/icons-material/Logout';
 import {delay} from "./utils";
 import {DesktopDatePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -12,9 +12,18 @@ import TripSchedule from "./TripsSchedule";
 
 export default function TripsList({userInfo, logout}) {
     return (
-        <div className={"header"}>
-            <h1>Hi, {userInfo.name}</h1>
-            <button onClick={logout}>logout</button>
+        <div>
+            <Stack alignItems="center" direction="row" spacing={2}>
+                <h2>Hi, {userInfo.name}</h2>
+                <Button
+                    size="small"
+                    startIcon={<LogoutIcon />}
+                    onClick={logout}
+                >
+                    Logout
+                </Button>
+            </Stack>
+
             <TripListView userInfo={userInfo}/>
         </div>
     )
