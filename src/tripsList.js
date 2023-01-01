@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Chip, CircularProgress, TextField} from "@mui/material";
+import {Button, Chip, CircularProgress, Link, Stack, TextField} from "@mui/material";
 import TripApplication from "./tripApplication";
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import {delay} from "./utils";
 import {DesktopDatePicker} from "@mui/x-date-pickers";
@@ -133,17 +135,42 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
             <ul>
                 {trips.map(trip => (
                     <li key={trip.id}>
-                        <h3>{trip.title}</h3>
+                        <Stack alignItems="center" direction="row" spacing={2}>
+                            <h3>{trip.title}</h3>
+                            {trip.mainOrganizerID === userInfo.id && (
+                                <>
+                                    <Chip icon={<SupervisorAccountIcon />} label="admin" variant="outlined" />
+                                    <Button
+                                        size="small"
+                                        startIcon={<DeleteIcon />}
+                                        onClick={() => deleteTrip(trip.id)}
+                                    >
+                                        Delete trip
+                                    </Button>
+                                </>
+                            )}
+
+                        </Stack>
                         <p>Starts on {trip.startDate}, ends on {trip.endDate}</p>
-                        {trip.mainOrganizerID === userInfo.id && (
-                            <Chip label="admin" color="success"/>
-                        )}
-                        <button onClick={() => setSelectedSettlement(trip)}>View settlement</button>
-                        <button onClick={() => setSelectedTrip(trip)}>View application</button>
-                        <button onClick={() => setSelectedSchedule(trip)}>View schedule</button>
-                        {trip.mainOrganizerID === userInfo.id && (
-                            <button onClick={() => deleteTrip(trip.id)}>DeleteTrip</button>
-                        )}
+                        <Stack direction="row" spacing={2}>
+                            <Link
+                                component="button"
+                                variant="body2"
+                                onClick={() => setSelectedSettlement(trip)}
+                            >View settlement</Link>
+
+                            <Link
+                                component="button"
+                                variant="body2"
+                                onClick={() => setSelectedTrip(trip)}
+                            >View application</Link>
+                            <Link
+                                component="button"
+                                variant="body2"
+                                onClick={() => setSelectedSchedule(trip)}
+                            >View schedule</Link>
+                        </Stack>
+
                     </li>
                 ))}
             </ul>
