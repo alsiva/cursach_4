@@ -55,6 +55,13 @@
       "name": "streikh",
       "right": "participant",
       "id": 8
+    },
+    {
+      "email": "kalugina@gmail.com",
+      "password": "$2a$10$H/lRt4Ht26AtHQ79cHS.t.4uf3NIej9HKUEW0A89ORaNOtZFwEEZS",
+      "name": "kalugina",
+      "right": "participant",
+      "id": 9
     }
   ],
   "trips": [

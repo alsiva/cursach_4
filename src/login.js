@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
-import {Alert, Button, CircularProgress, Stack, TextField} from "@mui/material";
+import {Alert, Button, CircularProgress, Link, Stack, TextField} from "@mui/material";
+import LoginIcon from '@mui/icons-material/Login';
+import RegisterIcon from '@mui/icons-material/PersonAddAlt1';
 import {delay} from "./utils";
 
 
@@ -7,14 +9,14 @@ export default function Login({onLogin}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
+
     const [isLoading, setIsLoading] = useState(false);
-    const [isRegistering, setIsRegistering] = useState(false);
     const [error, setError] = useState("");
 
+    const [isLoginSelected, setLoginSelected] = useState(true)
 
     async function login() {
         setIsLoading(true)
-        setIsRegistering(false)
         setError("")
 
         const response = await fetch('/api/login', {
@@ -28,18 +30,15 @@ export default function Login({onLogin}) {
             })
         })
 
+        await delay(500)
+        setIsLoading(false)
 
         if (response.status === 400) {
             setError(response.statusText)
-            setIsLoading(false)
             return
         }
 
-        await delay(1000)
-        setIsLoading(false)
-
         const json = await response.json()
-
 
         if (json.user.right === "ban") {
             setError("You are banned")
@@ -56,10 +55,8 @@ export default function Login({onLogin}) {
     }
 
     async function register() {
-        setIsRegistering(true);
-        await delay(1000)
-        setIsRegistering(false)
-
+        setError("")
+        setIsLoading(true);
 
         const response = await fetch('/api/users', {
             method: 'POST',
@@ -74,10 +71,10 @@ export default function Login({onLogin}) {
             }),
         })
 
-
+        await delay(1000)
+        setIsLoading(false)
 
         if (response.status === 409) {
-            setIsRegistering(false)
             setError(`user ${username} already exists`)
             return
         }
@@ -86,16 +83,12 @@ export default function Login({onLogin}) {
             const json = await response.json()
             let error = Object.keys(json).map(key => `${key}: ${json[key]}`).join(', ');
 
-            setIsRegistering(false)
             setError(error)
-
             return
         }
 
         if (response.status === 500) {
-            setIsRegistering(false)
             setError("Don't try to register again")
-
             return
         }
 
@@ -109,30 +102,25 @@ export default function Login({onLogin}) {
         }
 
         onLogin(userInfo)
-
     }
 
     return (
         <header>
-            <div className="about">
-                <h1>Курсовая работа №4</h1>
-                <ul>
-                    <li>Студент: <span className="author-name">Иванов Алексей Анатольевич</span></li>
-                    <li>Группа: <span className="cursive">P33131</span></li>
-                </ul>
-            </div>
+            <h2>Login</h2>
 
             <div className="login-form">
-                <Stack maxWidth={300} sx={{py: 2 }}>
-                    <TextField
-                        label="User"
-                        variant="outlined"
-                        value={username}
-                        onChange={(e) => {
-                            setError("")
-                            setUsername(e.target.value)
-                        }}
-                    />
+                <Stack maxWidth={300} spacing={1} sx={{py: 2}}>
+                    {!isLoginSelected && (
+                        <TextField
+                            label="Name"
+                            variant="outlined"
+                            value={username}
+                            onChange={(e) => {
+                                setError("")
+                                setUsername(e.target.value)
+                            }}
+                        />
+                    )}
                     <TextField
                         label="Email"
                         variant="outlined"
@@ -154,23 +142,45 @@ export default function Login({onLogin}) {
                     />
                 </Stack>
 
-                <Button
-                    variant="outlined"
-                    onClick={login}
-                    startIcon={isLoading ? <CircularProgress size={12}/> : null}
-                    disabled={isLoading}
-                >
-                    Login
-                </Button>
+                <Stack direction="row" spacing={1}>
+                    {isLoginSelected
+                        ? (
+                            <>
+                                <Button
+                                    variant="outlined"
+                                    onClick={login}
+                                    startIcon={isLoading ? <CircularProgress size={12}/> : null}
+                                    disabled={isLoading}
+                                >
+                                    Login&nbsp;<LoginIcon/>
+                                </Button>
 
-                <Button
-                    variant="outlined"
-                    onClick={register}
-                    startIcon={isRegistering ? <CircularProgress size={12}/> : null}
-                    disabled={isRegistering}
-                >
-                    Register
-                </Button>
+                                <Link
+                                    component="button"
+                                    variant="body2"
+                                    onClick={() => setLoginSelected(false)}
+                                >No account? Register here</Link>
+                            </>
+                        ) : (
+                            <>
+                                <Link
+                                    component="button"
+                                    variant="body2"
+                                    onClick={() => setLoginSelected(true)}
+                                >Return to login</Link>
+                                <Button
+                                    variant="outlined"
+                                    onClick={register}
+                                    startIcon={isLoading ? <CircularProgress size={12}/> : null}
+                                    disabled={isLoading}
+                                >
+                                    Register&nbsp;<RegisterIcon />
+                                </Button>
+                            </>
+                        )
+                    }
+                </Stack>
+
 
                 {error && (
                     <Alert severity="error">{error}</Alert>
