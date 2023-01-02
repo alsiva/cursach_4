@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Alert, Button, CircularProgress, TextField} from "@mui/material";
+import {Alert, Button, CircularProgress, Stack, TextField} from "@mui/material";
 import {delay} from "./utils";
 
 
@@ -123,34 +123,37 @@ export default function Login({onLogin}) {
             </div>
 
             <div className="login-form">
-                <TextField
-                    label="User"
-                    variant="outlined"
-                    value={username}
-                    onChange={(e) => {
-                        setError("")
-                        setUsername(e.target.value)
-                    }}
-                />
-                <TextField
-                    label="Email"
-                    variant="outlined"
-                    value={email}
-                    onChange={(e) => {
-                        setError("")
-                        setEmail(e.target.value)
-                    }}
-                />
-                <TextField
-                    label="Password"
-                    variant="outlined"
-                    type="password"
-                    value={password}
-                    onChange={(e) => {
-                        setError("")
-                        setPassword(e.target.value)
-                    }}
-                />
+                <Stack maxWidth={300} sx={{py: 2 }}>
+                    <TextField
+                        label="User"
+                        variant="outlined"
+                        value={username}
+                        onChange={(e) => {
+                            setError("")
+                            setUsername(e.target.value)
+                        }}
+                    />
+                    <TextField
+                        label="Email"
+                        variant="outlined"
+                        value={email}
+                        onChange={(e) => {
+                            setError("")
+                            setEmail(e.target.value)
+                        }}
+                    />
+                    <TextField
+                        label="Password"
+                        variant="outlined"
+                        type="password"
+                        value={password}
+                        onChange={(e) => {
+                            setError("")
+                            setPassword(e.target.value)
+                        }}
+                    />
+                </Stack>
+
                 <Button
                     variant="outlined"
                     onClick={login}

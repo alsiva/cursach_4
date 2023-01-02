@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Chip, CircularProgress, Link, Stack, TextField} from "@mui/material";
+import {Box, Button, Chip, CircularProgress, Link, Stack, TextField} from "@mui/material";
 import TripApplication from "./tripApplication";
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -9,6 +9,8 @@ import {DesktopDatePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import TripSettlement from "./tripSettlement";
 import TripSchedule from "./TripsSchedule";
+import TextareaAutosize from '@mui/base/TextareaAutosize';
+
 
 export default function TripsList({userInfo, logout}) {
     return (
@@ -17,32 +19,31 @@ export default function TripsList({userInfo, logout}) {
                 <h2>Hi, {userInfo.name}</h2>
                 <Button
                     size="small"
-                    startIcon={<LogoutIcon />}
+                    startIcon={<LogoutIcon/>}
                     onClick={logout}
                 >
                     Logout
                 </Button>
             </Stack>
-
             <TripListView userInfo={userInfo}/>
         </div>
     )
 }
 
-function TripListView({ userInfo }) {
-    const [current, setCurrent] = useState({ page: 'trips'})
+function TripListView({userInfo}) {
+    const [current, setCurrent] = useState({page: 'trips'})
 
     function returnToMainPage() {
-        setCurrent({ page: 'trips' })
+        setCurrent({page: 'trips'})
     }
 
-    switch(current.page) {
+    switch (current.page) {
         case 'trips':
             return (
                 <Trips
-                    setSelectedTrip={trip => setCurrent({ page: 'application', trip: trip})}
+                    setSelectedTrip={trip => setCurrent({page: 'application', trip: trip})}
                     userInfo={userInfo}
-                    setSelectedSettlement={trip => setCurrent({ page: 'settlement', trip: trip })}
+                    setSelectedSettlement={trip => setCurrent({page: 'settlement', trip: trip})}
                     setSelectedSchedule={trip => setCurrent({page: 'schedule', trip: trip})}
                 />
             )
@@ -144,42 +145,43 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
             <ul>
                 {trips.map(trip => (
                     <li key={trip.id}>
-                        <Stack alignItems="center" direction="row" spacing={2}>
-                            <h3>{trip.title}</h3>
-                            {trip.mainOrganizerID === userInfo.id && (
-                                <>
-                                    <Chip icon={<SupervisorAccountIcon />} label="admin" variant="outlined" />
-                                    <Button
-                                        size="small"
-                                        startIcon={<DeleteIcon />}
-                                        onClick={() => deleteTrip(trip.id)}
-                                    >
-                                        Delete trip
-                                    </Button>
-                                </>
-                            )}
+                        <Box sx={{ p: 2, border: '1px dashed grey' }}>
+                            <Stack alignItems="center" direction="row" spacing={2}>
+                                <h3>{trip.title}</h3>
+                                {trip.mainOrganizerID === userInfo.id && (
+                                    <>
+                                        <Chip icon={<SupervisorAccountIcon/>} label="admin" variant="outlined"/>
+                                        <Button
+                                            size="small"
+                                            startIcon={<DeleteIcon/>}
+                                            onClick={() => deleteTrip(trip.id)}
+                                        >
+                                            Delete trip
+                                        </Button>
+                                    </>
+                                )}
 
-                        </Stack>
-                        <p>Starts on {trip.startDate}, ends on {trip.endDate}</p>
-                        <Stack direction="row" spacing={2}>
-                            <Link
-                                component="button"
-                                variant="body2"
-                                onClick={() => setSelectedSettlement(trip)}
-                            >View settlement</Link>
+                            </Stack>
+                            <p>Starts on {trip.startDate}, ends on {trip.endDate}</p>
+                            <Stack direction="row" spacing={2}>
+                                <Link
+                                    component="button"
+                                    variant="body2"
+                                    onClick={() => setSelectedSettlement(trip)}
+                                >View settlement</Link>
 
-                            <Link
-                                component="button"
-                                variant="body2"
-                                onClick={() => setSelectedTrip(trip)}
-                            >View application</Link>
-                            <Link
-                                component="button"
-                                variant="body2"
-                                onClick={() => setSelectedSchedule(trip)}
-                            >View schedule</Link>
-                        </Stack>
-
+                                <Link
+                                    component="button"
+                                    variant="body2"
+                                    onClick={() => setSelectedTrip(trip)}
+                                >View application</Link>
+                                <Link
+                                    component="button"
+                                    variant="body2"
+                                    onClick={() => setSelectedSchedule(trip)}
+                                >View schedule</Link>
+                            </Stack>
+                        </Box>
                     </li>
                 ))}
             </ul>
@@ -192,6 +194,7 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
 }
 
 const DATEPICKER_FORMAT = "DD/MM/YYYY"
+
 function CreateTrip({addTrip}) {
     const [title, setTitle] = useState("")
     const [startDate, setStartDate] = useState(dayjs().add(1, 'week'))
@@ -202,43 +205,46 @@ function CreateTrip({addTrip}) {
     return (
         <div>
             <h2>Create trip</h2>
-            <div className="login-form">
-                <TextField
-                    label="Title"
-                    variant="outlined"
-                    value={title}
-                    onChange={(e) => {
-                        setTitle(e.target.value)
-                    }}
-                />
-                <DesktopDatePicker
-                    label="Start date"
-                    inputFormat={DATEPICKER_FORMAT}
-                    value={startDate}
-                    onChange={(date) => {
-                        setStartDate(date)
-                    }}
-                    renderInput={(params) => <TextField {...params} />}
-                />
-                <DesktopDatePicker
-                    label="End date"
-                    inputFormat={DATEPICKER_FORMAT}
-                    value={endDate}
-                    onChange={(date) => {
-                        setEndDate(date)
-                    }}
-                    renderInput={(params) => <TextField {...params} />}
-                />
-                <textarea
-                    value={description}
-                    onChange={e => setDescription(e.currentTarget.value)}
-                />
-                <Button
-                    variant="outlined"
-                    onClick={() => addTrip(title, description, startDate, endDate)}
-                >
-                    Add trip
-                </Button>
+            <div>
+                <Stack maxWidth={400} spacing={2}>
+                    <TextField
+                        label="Title"
+                        variant="outlined"
+                        value={title}
+                        onChange={(e) => {
+                            setTitle(e.target.value)
+                        }}
+                    />
+                    <DesktopDatePicker
+                        label="Start date"
+                        inputFormat={DATEPICKER_FORMAT}
+                        value={startDate}
+                        onChange={(date) => {
+                            setStartDate(date)
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                    <DesktopDatePicker
+                        label="End date"
+                        inputFormat={DATEPICKER_FORMAT}
+                        value={endDate}
+                        onChange={(date) => {
+                            setEndDate(date)
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                    <TextareaAutosize
+                        minRows={3}
+                        placeholder="Trip description"
+                        onChange={e => setDescription(e.currentTarget.value)}
+                    />
+                    <Button
+                        variant="outlined"
+                        onClick={() => addTrip(title, description, startDate, endDate)}
+                    >
+                        Add trip
+                    </Button>
+                </Stack>
             </div>
         </div>
     )

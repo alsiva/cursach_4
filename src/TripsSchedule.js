@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {delay} from "./utils";
-import {Button, CircularProgress, TextField} from "@mui/material";
+import {Box, Button, CircularProgress, Divider, Stack, TextField} from "@mui/material";
 import dayjs from "dayjs";
 import {DateTimePicker} from "@mui/x-date-pickers";
 
@@ -37,19 +37,26 @@ export default function TripSchedule({trip, userInfo, back}) {
 
     return (
         <div>
-            <button onClick={back}>Go back</button>
-            <ul>
-                {schedules.map(schedule => (
-                    <li key={schedule.id}>
-                        <h3>{schedule.startTime} - {schedule.endTime}:
-                            {userInfo.right === 'organizer' &&
-                                <button onClick={() => deleteSchedule(schedule.id)}>Delete</button>
-                            }
-                        </h3>
-                        <h5>{schedule.description}</h5>
-                    </li>
-                ))}
-            </ul>
+            <Button onClick={back}>Go back</Button>
+            <Box sx={{ p: 2, border: '1px dashed grey' }}>
+                <ul>
+                    {schedules.map(schedule => (
+                        <li key={schedule.id}>
+                            <Stack divider={<Divider orientation="vertical" flexItem/>}
+                                   direction={"row"}
+                                   spacing={1}
+                                   alignItems={"center"}
+                            >
+                                {userInfo.right === 'organizer' &&
+                                    <Button onClick={() => deleteSchedule(schedule.id)}>Delete</Button>
+                                }
+                                <h3>{schedule.startTime} - {schedule.endTime}:</h3>
+                                <h3>{schedule.description}</h3>
+                            </Stack>
+                        </li>
+                    ))}
+                </ul>
+            </Box>
 
             {userInfo.right === 'organizer' &&
                 <div>
@@ -116,8 +123,7 @@ function CreateSchedule({addSchedule}) {
 
     return (
         <div>
-            <h2>Create schedule</h2>
-            <div className="login-form">
+            <Stack maxWidth={400} spacing={1}>
                 <DateTimePicker
                     label="StartTime"
                     inputFormat={TIMESTAMP_FORMAT}
@@ -146,7 +152,7 @@ function CreateSchedule({addSchedule}) {
                 >
                     Add Schedule
                 </Button>
-            </div>
+            </Stack>
         </div>
     )
 }

@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react'
-import {CircularProgress, MenuItem, Select} from "@mui/material";
+import {Button, CircularProgress, MenuItem, Select} from "@mui/material";
 import {delay} from "./utils";
 
 
 export default function TripApplication({trip, userInfo, back}) {
     return (
         <div>
-            <button onClick={back}>back to trip list</button>
+            <Button onClick={back}>back to trip list</Button>
             <h3>{trip.title}</h3>
             <p>Starts on {trip.startDate}, ends on {trip.endDate}</p>
             <h4>Application status</h4>
@@ -31,8 +31,10 @@ async function getTripApplications(tripId) {
 
     return await response.json()
 }
-function TripManagement({ tripId }) {
+
+function TripManagement({tripId}) {
     const [applications, setApplications] = useState(null)
+    const [seeType, setSeeType] = useState('applied')
 
     useEffect(() => {
         getTripApplications(tripId).then(applications => setApplications(applications))
@@ -45,9 +47,10 @@ function TripManagement({ tripId }) {
     return (
         <div>
             <h4>List of applications</h4>
+            <SetType seeType={seeType} setSeeType={setSeeType}/>
             <ul>
-                {applications.map((application, index) => {
-                    const { user, letter, tripId, userId } = application
+                {applications.filter(application => application.state === seeType).map((application, index) => {
+                    const {user, letter, tripId, userId} = application
 
                     return (
                         <li key={tripId + ":" + userId}>
@@ -89,16 +92,28 @@ async function changeParticipantStatus(id, newState) {
     })
 
 
-
     return await response.json()
 }
 
+function SetType({seeType, setSeeType}) {
+    return (
+        <Select
+            value={seeType}
+            label="SeeType"
+            onChange={e => setSeeType(e.target.value)}
+        >
+            <MenuItem value='applied'>{'applied'}</MenuItem>
+            <MenuItem value='confirmed'>{'confirmed'}</MenuItem>
+            <MenuItem value='rejected'>{'rejected'}</MenuItem>
+        </Select>
+    )
+}
 
 function ParticipantStatus({state, changeStatus, id}) {
     const [isLoading, setIsLoading] = useState(false)
 
     if (isLoading) {
-        return <CircularProgress />
+        return <CircularProgress/>
     }
 
     return (
@@ -146,12 +161,13 @@ async function getApplicationStatus(tripId, userId) {
 
     const array = await response.json()
     if (array.length === 0) {
-        return { state: 'idle' }
+        return {state: 'idle'}
     } else {
         return array[0]
     }
 }
-function ApplicationStatus({ tripId, userId }) {
+
+function ApplicationStatus({tripId, userId}) {
     const [status, setStatus] = useState(null)
 
     useEffect(() => {

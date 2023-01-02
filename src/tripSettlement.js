@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Box, Chip, CircularProgress, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import {Box, Button, Chip, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack} from "@mui/material";
 import {delay} from "./utils";
 
 
@@ -21,7 +21,7 @@ export default function TripSettlement({trip, userInfo, back}) {
     return (
         <div>
             <h1>There will be settlement</h1>
-            <button onClick={back}>back to trip list</button>
+            <Button onClick={back}>back to trip list</Button>
             <SettlementManagement tripId={trip.id} userInfo={userInfo}/>
         </div>
     )
@@ -58,12 +58,12 @@ function SettlementManagement({tripId, userInfo}) {
 
     return (
         <div>
-            <div>
+            <ul>
                 {info.map(({house, settled}) => {
                     return (
                         <li key={house.id}>
                             <h4>{house.name}</h4>
-                            <ul>
+                            <Stack direction={"row"} spacing={1}>
                                 {settled.map(settlement => (
                                     <Chip
                                         key={settlement.id}
@@ -79,11 +79,11 @@ function SettlementManagement({tripId, userInfo}) {
                                         }}
                                     />
                                 ))}
-                            </ul>
+                            </Stack>
                         </li>
                     )
                 })}
-            </div>
+            </ul>
             <div>
                 <h4>Not settled</h4>
                 <ul>
