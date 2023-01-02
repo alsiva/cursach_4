@@ -91,38 +91,38 @@ function SettlementManagement({tripId, userInfo}) {
                         return (
                             <Box key={participant.id} sx={{maxWidth: 120}}>
                                 {userInfo.right === 'organizer'
-                                    ? <FormControl fullWidth>
-                                        <InputLabel id={participant.id.toString()}>{participant.name}</InputLabel>
-                                        <Select
-                                            labelId={participant.id.toString()}
-                                            key={participant.id}
-                                            value={''}
-                                            label={participant.name}
-                                            onChange={e => {
-                                                const houseId = Number(e.target.value)
-                                                addSettler(participant.id, tripId, houseId).then(settlement => {
-                                                    setSettlements(prev => {
-                                                        const newSettlement = {
-                                                            id: settlement.id,
-                                                            tripId: settlement.tripId,
-                                                            houseId: settlement.houseId,
-                                                            userId: settlement.userId,
-                                                            user: participant,
-                                                        }
-                                                        return [...prev, newSettlement]
+                                    ? (
+                                        <FormControl fullWidth>
+                                            <InputLabel id={participant.id.toString()}>{participant.name}</InputLabel>
+                                            <Select
+                                                labelId={participant.id.toString()}
+                                                key={participant.id}
+                                                value={''}
+                                                label={participant.name}
+                                                onChange={e => {
+                                                    const houseId = Number(e.target.value)
+                                                    addSettler(participant.id, tripId, houseId).then(settlement => {
+                                                        setSettlements(prev => {
+                                                            const newSettlement = {
+                                                                id: settlement.id,
+                                                                tripId: settlement.tripId,
+                                                                houseId: settlement.houseId,
+                                                                userId: settlement.userId,
+                                                                user: participant,
+                                                            }
+                                                            return [...prev, newSettlement]
+                                                        })
                                                     })
-                                                })
-                                            }}
-                                        >
-                                            {housesWithCapacity.map(house => (
-                                                <MenuItem key={house.id} value={house.id}>{house.name}</MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-
-                                    : <h4>
-                                        {participant.name}
-                                    </h4>
+                                                }}
+                                            >
+                                                {housesWithCapacity.map(house => (
+                                                    <MenuItem key={house.id} value={house.id}>{house.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    ) : (
+                                        <h4>{participant.name}</h4>
+                                    )
                                 }
                             </Box>
                         )
