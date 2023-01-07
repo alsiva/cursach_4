@@ -22,7 +22,7 @@ public class Trip {
     private LocalDate endDate;
 
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(cascade = CascadeType.MERGE, optional = false)
     @JoinColumn(name = "mainOrganizer_id", nullable = false)
     private BerryPerson mainOrganizer;
 
@@ -30,8 +30,7 @@ public class Trip {
     public Trip() {
     }
 
-    public Trip(Long id, String name, String description, LocalDate startDate, LocalDate endDate, BerryPerson mainOrganizer) {
-        this.id = id;
+    public Trip(String name, String description, LocalDate startDate, LocalDate endDate, BerryPerson mainOrganizer) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;

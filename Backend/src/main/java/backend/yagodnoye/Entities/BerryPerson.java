@@ -62,6 +62,7 @@ public class BerryPerson {
         return rightId;
     }
     public String getEmail(){return email;}
+    @Column()
     public String getUsername() {return username;}
 
     public void setRightId(int rightId) {
@@ -127,6 +128,7 @@ public class BerryPerson {
     public Long getId() {
         return id;
     }
+
 
     @Override
     public String toString() {

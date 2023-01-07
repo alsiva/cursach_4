@@ -28,4 +28,11 @@ public class AuthorizationService {
         repository.save(berryPerson);
         return berryPerson;
     }
+
+    public BerryPerson findByName(String name){
+        return repository.findByNameLikeIgnoreCase(name);
+    }
+    public BerryPerson findByUsername (String username) {return repository.findByUsernameLikeIgnoreCase
+    (username);}
+    public BerryPerson findById(Long id) {return repository.findByIdEquals(id);}
 }
