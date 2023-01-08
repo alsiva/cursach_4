@@ -3,7 +3,7 @@ package backend.yagodnoye.Repository;
 import backend.yagodnoye.Entities.BerryPerson;
 import backend.yagodnoye.Entities.Trip;
 import backend.yagodnoye.Entities.TripParticipant;
-import backend.yagodnoye.Entities.TripParticipantID;
+import backend.yagodnoye.IdClasses.TripParticipantID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

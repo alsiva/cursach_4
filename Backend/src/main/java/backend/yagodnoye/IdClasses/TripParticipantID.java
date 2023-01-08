@@ -1,4 +1,7 @@
-package backend.yagodnoye.Entities;
+package backend.yagodnoye.IdClasses;
+
+import backend.yagodnoye.Entities.BerryPerson;
+import backend.yagodnoye.Entities.Trip;
 
 import java.io.Serializable;
 import java.util.Objects;

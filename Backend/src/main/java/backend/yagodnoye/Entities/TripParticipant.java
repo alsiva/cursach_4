@@ -1,5 +1,6 @@
 package backend.yagodnoye.Entities;
 
+import backend.yagodnoye.IdClasses.TripParticipantID;
 import jakarta.persistence.*;
 
 @Entity
