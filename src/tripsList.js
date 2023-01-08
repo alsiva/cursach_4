@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import TripSettlement from "./tripSettlement";
 import TripSchedule from "./TripsSchedule";
 import TextareaAutosize from '@mui/base/TextareaAutosize';
+import DateRangeIcon from '@mui/icons-material/DateRange';
 
 
 export default function TripsList({userInfo, logout}) {
@@ -160,9 +161,11 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
                                         </Button>
                                     </>
                                 )}
-
                             </Stack>
-                            <p>Starts on {trip.startDate}, ends on {trip.endDate}</p>
+                            <Stack direction="row" spacing={0} alignItems="center">
+                                <DateRangeIcon />&nbsp;
+                                <span>{trip.startDate}</span>&nbsp;-&nbsp;<span>{trip.endDate}</span>
+                            </Stack>
                             <Stack direction="row" spacing={2}>
                                 <Link
                                     component="button"
@@ -240,7 +243,18 @@ function CreateTrip({addTrip}) {
                     />
                     <Button
                         variant="outlined"
-                        onClick={() => addTrip(title, description, startDate, endDate)}
+                        onClick={() => {
+                            if (startDate == null) {
+                                // todo: display error
+                                return;
+                            }
+                            if (endDate == null) {
+                                // todo: display error
+                                return;
+                            }
+
+                            return addTrip(title, description, startDate.format(API_FORMAT), endDate.format(API_FORMAT));
+                        }}
                     >
                         Add trip
                     </Button>
@@ -249,3 +263,5 @@ function CreateTrip({addTrip}) {
         </div>
     )
 }
+
+const API_FORMAT = 'YYYY/MM/DD';

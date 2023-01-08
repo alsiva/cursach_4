@@ -68,30 +68,37 @@
     {
       "id": 1,
       "title": "Первый весенний выезд",
-      "startDate": "1 марта 2023",
-      "endDate": "7 марта 2023",
+      "startDate": "2023/03/01",
+      "endDate": "2023/03/07",
       "mainOrganizerID": 1
     },
     {
       "id": 2,
       "title": "В середине лета",
-      "startDate": "7 июля 2023",
-      "endDate": "21 июля 2023",
+      "startDate": "2023/08/07",
+      "endDate": "2023/08/21",
       "mainOrganizerID": 4
     },
     {
       "title": "Ya.Relax",
-      "startDate": "2022-05-31T21:06:34.000Z",
-      "endDate": "2022-06-13T21:06:34.000Z",
+      "startDate": "2023/05/31",
+      "endDate": "2023/06/13",
       "mainOrganizerID": 1,
       "id": 3
     },
     {
       "title": "Ya.Sport",
-      "startDate": "2023-07-13T21:00:00.000Z",
-      "endDate": "2023-07-27T21:00:00.000Z",
+      "startDate": "2023/07/13",
+      "endDate": "2023/07/27",
       "mainOrganizerID": 1,
       "id": 4
+    },
+    {
+      "title": "January trip",
+      "startDate": "2023/01/16",
+      "endDate": "2023/01/23",
+      "mainOrganizerID": 1,
+      "id": 5
     }
   ],
   "applications": [
