@@ -99,6 +99,13 @@
       "endDate": "2023/01/23",
       "mainOrganizerID": 1,
       "id": 5
+    },
+    {
+      "title": "",
+      "startDate": "Invalid Date",
+      "endDate": "2023/01/23",
+      "mainOrganizerID": 1,
+      "id": 6
     }
   ],
   "applications": [

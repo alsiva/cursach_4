@@ -201,7 +201,7 @@ const DATEPICKER_FORMAT = "DD/MM/YYYY"
 function CreateTrip({addTrip}) {
     const [title, setTitle] = useState("")
     const [startDate, setStartDate] = useState(dayjs().add(1, 'week'))
-    const [endDate, setEndDate] = useState(startDate.add(1, 'week'))
+    const [endDate, setEndDate] = useState(dayjs().add(2, 'week'))
     const [description, setDescription] = useState("")
 
 
@@ -225,7 +225,13 @@ function CreateTrip({addTrip}) {
                         onChange={(date) => {
                             setStartDate(date)
                         }}
-                        renderInput={(params) => <TextField {...params} />}
+                        renderInput={({error, helperText, ...restParams}) => (
+                            <TextField
+                                error={startDate == null ? true : error}
+                                helperText={startDate == null ? 'Can\'t be empty' : helperText}
+                                {...restParams}
+                            />
+                        )}
                     />
                     <DesktopDatePicker
                         label="End date"
@@ -234,7 +240,13 @@ function CreateTrip({addTrip}) {
                         onChange={(date) => {
                             setEndDate(date)
                         }}
-                        renderInput={(params) => <TextField {...params} />}
+                        renderInput={({error, helperText, ...restParams}) => (
+                            <TextField
+                                error={startDate == null ? true : error}
+                                helperText={startDate == null ? 'Can\'t be empty' : helperText}
+                                {...restParams}
+                            />
+                        )}
                     />
                     <TextareaAutosize
                         minRows={3}
@@ -243,17 +255,9 @@ function CreateTrip({addTrip}) {
                     />
                     <Button
                         variant="outlined"
+                        disabled={startDate == null || endDate == null}
                         onClick={() => {
-                            if (startDate == null) {
-                                // todo: display error
-                                return;
-                            }
-                            if (endDate == null) {
-                                // todo: display error
-                                return;
-                            }
-
-                            return addTrip(title, description, startDate.format(API_FORMAT), endDate.format(API_FORMAT));
+                            addTrip(title, description, startDate.format(API_FORMAT), endDate.format(API_FORMAT));
                         }}
                     >
                         Add trip
