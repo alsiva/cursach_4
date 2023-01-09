@@ -1,7 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Button, Chip, CircularProgress, Link, Stack, TextField} from "@mui/material";
+import {
+    Avatar,
+    Box,
+    Button,
+    CardActions,
+    CardContent,
+    CardHeader,
+    CircularProgress,
+    Link,
+    Stack,
+    TextField, Typography
+} from "@mui/material";
 import TripApplication from "./tripApplication";
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {delay} from "./utils";
@@ -10,7 +20,7 @@ import dayjs from "dayjs";
 import TripSettlement from "./tripSettlement";
 import TripSchedule from "./TripsSchedule";
 import TextareaAutosize from '@mui/base/TextareaAutosize';
-import DateRangeIcon from '@mui/icons-material/DateRange';
+import Card from '@mui/material/Card';
 
 
 export default function TripsList({userInfo, logout}) {
@@ -142,52 +152,88 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
 
     return (
         <div>
-            <h2>List of trips</h2>
-            <ul>
-                {trips.map(trip => (
-                    <li key={trip.id}>
-                        <Box sx={{ p: 2, border: '1px dashed grey' }}>
-                            <Stack alignItems="center" direction="row" spacing={2}>
-                                <h3>{trip.title}</h3>
-                                {trip.mainOrganizerID === userInfo.id && (
-                                    <>
-                                        <Chip icon={<SupervisorAccountIcon/>} label="admin" variant="outlined"/>
-                                        <Button
-                                            size="small"
-                                            startIcon={<DeleteIcon/>}
-                                            onClick={() => deleteTrip(trip.id)}
-                                        >
-                                            Delete trip
-                                        </Button>
-                                    </>
-                                )}
-                            </Stack>
-                            <Stack direction="row" spacing={0} alignItems="center">
-                                <DateRangeIcon />&nbsp;
-                                <span>{trip.startDate}</span>&nbsp;-&nbsp;<span>{trip.endDate}</span>
-                            </Stack>
-                            <Stack direction="row" spacing={2}>
-                                <Link
-                                    component="button"
+            <Typography variant="h5">List of trips</Typography>
+            <Box direction="row" sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'space-evenly',
+                boxShadow: 2,
+                backgroundColor: '#f7f7f7',
+                border: 1,
+                borderRadius: 3,
+                marginY: 3,
+                paddingY: 2
+            }}
+            >
+                {trips.map(trip => {
+                    const dateString = `${trip.startDate} - ${trip.endDate}`
+                    return (
+                        <Card
+                            sx={{maxWidth: 400, margin: 1, boxShadow: 1, border: 1, borderColor: '#dbdbdb'}}
+                        >
+                            <CardHeader
+                                //helperText={startDate == null ? 'Can\'t be empty' : helperText}
+                                avatar={trip.mainOrganizerID === userInfo.id ? (
+                                        <Avatar sx={{bgcolor: '#fc4903'}} aria-label="user-role">
+                                            Org
+                                        </Avatar>
+                                    )
+                                    : (
+                                        <Avatar sx={{bgcolor: '#43bf00'}} aria-label="user-role">
+                                            Prt
+                                        </Avatar>
+                                    )
+                                }
+                                title={trip.title}
+                                titleTypographyProps={{variant: 'h6'}}
+                                subheader={dateString}
+                                action={
+                                    <Button
+                                        size="small"
+                                        startIcon={<DeleteIcon/>}
+                                        onClick={() => deleteTrip(trip.id)}
+                                    >
+                                        Delete trip
+                                    </Button>
+                                }
+                            />
+                            <CardContent>
+                                <Typography
                                     variant="body2"
-                                    onClick={() => setSelectedSettlement(trip)}
-                                >View settlement</Link>
-
-                                <Link
-                                    component="button"
-                                    variant="body2"
-                                    onClick={() => setSelectedTrip(trip)}
-                                >View application</Link>
-                                <Link
-                                    component="button"
-                                    variant="body2"
-                                    onClick={() => setSelectedSchedule(trip)}
-                                >View schedule</Link>
-                            </Stack>
-                        </Box>
-                    </li>
-                ))}
-            </ul>
+                                    color="text.secondary"
+                                    sx={{
+                                        display: '-webkit-box',
+                                        overflow: 'hidden',
+                                        WebkitBoxOrient: 'vertical',
+                                        WebkitLineClamp: 3,
+                                    }}
+                                >
+                                    {lorem}
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Stack direction="row" spacing={2}>
+                                    <Link
+                                        component="button"
+                                        variant="body2"
+                                        onClick={() => setSelectedSettlement(trip)}
+                                    >View settlement</Link>
+                                    <Link
+                                        component="button"
+                                        variant="body2"
+                                        onClick={() => setSelectedTrip(trip)}
+                                    >View application</Link>
+                                    <Link
+                                        component="button"
+                                        variant="body2"
+                                        onClick={() => setSelectedSchedule(trip)}
+                                    >View schedule</Link>
+                                </Stack>
+                            </CardActions>
+                        </Card>
+                    )
+                })}
+            </Box>
 
             {userInfo.right === 'organizer' && (
                 <CreateTrip addTrip={addTrip}/>
@@ -269,3 +315,8 @@ function CreateTrip({addTrip}) {
 }
 
 const API_FORMAT = 'YYYY/MM/DD';
+
+const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in congue lectus. Suspendisse eget congue nulla. Pellentesque non nisl lorem. Cras porta lectus vitae dolor tincidunt, et convallis augue rhoncus. Nulla at sagittis lacus, vitae imperdiet eros. Morbi tincidunt ullamcorper justo, sed facilisis metus posuere eu. Quisque fringilla, augue a hendrerit tristique, sapien augue ornare felis, ut varius lacus elit a enim. Quisque id enim a velit laoreet condimentum vel vel velit. Phasellus nunc elit, commodo quis urna eu, convallis maximus ante.\n' +
+    '\n' +
+    'In feugiat felis eget ipsum laoreet, ut interdum quam tempor. Nullam porttitor pellentesque mi vitae lacinia. Maecenas aliquet augue vitae felis efficitur facilisis. Ut mollis laoreet metus quis lacinia. Curabitur id lacinia lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Morbi suscipit varius mauris ut pulvinar. Nullam congue, augue nec mattis sodales, magna velit hendrerit mauris, ac ornare magna tellus eu ipsum.'
+
