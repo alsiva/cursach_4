@@ -10,15 +10,15 @@ import java.util.Objects;
 
 public class SettlementID implements Serializable {
     private Trip trip;
-    private BerryPerson person;
+    private BerryPerson berryPerson;
     private House house;
 
     public SettlementID() {
     }
 
-    public SettlementID(Trip trip, BerryPerson person, House house) {
+    public SettlementID(Trip trip, BerryPerson berryPerson, House house) {
         this.trip = trip;
-        this.person = person;
+        this.berryPerson = berryPerson;
         this.house = house;
     }
 
@@ -27,11 +27,11 @@ public class SettlementID implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SettlementID that = (SettlementID) o;
-        return trip.equals(that.trip) && person.equals(that.person) && house.equals(that.house);
+        return trip.equals(that.trip) && berryPerson.equals(that.berryPerson) && house.equals(that.house);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(trip, person, house);
+        return Objects.hash(trip, berryPerson, house);
     }
 }

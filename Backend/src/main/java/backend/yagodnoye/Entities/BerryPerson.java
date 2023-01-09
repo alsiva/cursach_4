@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
 @Table(name="berryperson")
@@ -143,5 +144,18 @@ public class BerryPerson {
                 ", telegram='" + telegram + '\'' +
                 ", vk='" + vk + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BerryPerson that = (BerryPerson) o;
+        return rightId == that.rightId && email.equals(that.email) && username.equals(that.username) && password.equals(that.password) && name.equals(that.name) && surname.equals(that.surname) && sex == that.sex && dateOfBirth.equals(that.dateOfBirth) && Objects.equals(telegram, that.telegram) && Objects.equals(vk, that.vk) && Objects.equals(organizingTrips, that.organizingTrips);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, username, rightId, password, name, surname, sex, dateOfBirth, telegram, vk, organizingTrips);
     }
 }

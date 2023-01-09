@@ -1,9 +1,8 @@
 package backend.yagodnoye.Configuration;
 
 import backend.yagodnoye.Entities.Trip;
-import backend.yagodnoye.Repository.BerryPersonRepository;
 import backend.yagodnoye.Repository.TripRepository;
-import backend.yagodnoye.Services.AuthorizationService;
+import backend.yagodnoye.Services.BerryPersonService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +13,7 @@ import java.util.List;
 @Configuration
 public class TripConfiguration {
     @Bean
-    CommandLineRunner commandLine(AuthorizationService service, TripRepository tripRepository){
+    CommandLineRunner commandLine(BerryPersonService service, TripRepository tripRepository){
         return args -> {
             Trip halloween = new Trip(
                     "Halloween 2022",

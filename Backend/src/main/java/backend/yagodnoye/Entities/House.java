@@ -11,13 +11,14 @@ public class House {
     @Column(name = "id", nullable = false)
     private Long id;
     private String name;
+    private int maxPeople;
 
     public House() {
     }
 
-    public House(Long id, String name) {
-        this.id = id;
+    public House(String name, int maxPeople) {
         this.name = name;
+        this.maxPeople = maxPeople;
     }
 
     public Long getId() {
@@ -26,5 +27,21 @@ public class House {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getMaxPeople() {
+        return maxPeople;
+    }
+
+    public void setMaxPeople(int maxPeople) {
+        this.maxPeople = maxPeople;
     }
 }

@@ -8,10 +8,11 @@ import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TripRepository extends JpaRepository<Trip, Long> {
     @Query("select t from Trip t where t.id = ?1")
-    Trip findByIdEquals(@NonNull Long id);
+    Optional<Trip> findByIdEquals(@NonNull Long id);
     @Transactional
     @Modifying
     @Query("delete from Trip t where t.id = ?1")

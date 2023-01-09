@@ -11,15 +11,16 @@ import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TripParticipantRepository extends JpaRepository<TripParticipant, TripParticipantID> {
     @Transactional
     @Modifying
     @Query("update TripParticipant t set t.approved = ?1 where t.berryPerson = ?2 and t.trip = ?3")
-    int updateApprovedByBerryPersonEqualsAndTripEquals(@NonNull boolean approved, @NonNull BerryPerson berryPerson, @NonNull Trip trip);
+    void updateApprovedByBerryPersonEqualsAndTripEquals(@NonNull boolean approved, @NonNull BerryPerson berryPerson, @NonNull Trip trip);
     @Query("select t from TripParticipant t where t.trip.id = ?1")
     List<TripParticipant> findByTrip_IdEquals(@NonNull Long id);
     @Query("select t from TripParticipant t where t.berryPerson.id = ?1 and t.trip.id = ?2")
-    TripParticipant findByBerryPerson_IdEqualsAndTrip_IdEquals(@NonNull Long id, @NonNull Object unknownAttr1);
+    Optional<TripParticipant> findByBerryPerson_IdEqualsAndTrip_IdEquals(@NonNull Long id, @NonNull Object unknownAttr1);
 
 }

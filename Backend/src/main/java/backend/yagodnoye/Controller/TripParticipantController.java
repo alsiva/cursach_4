@@ -2,10 +2,12 @@ package backend.yagodnoye.Controller;
 
 import backend.yagodnoye.Entities.Trip;
 import backend.yagodnoye.Entities.TripParticipant;
-import backend.yagodnoye.Services.AuthorizationService;
+import backend.yagodnoye.Exceptions.AlreadyExistsException;
+import backend.yagodnoye.Exceptions.PersonNotFoundException;
+import backend.yagodnoye.Exceptions.TripNotFoundException;
+import backend.yagodnoye.Services.BerryPersonService;
 import backend.yagodnoye.Services.TripParticipantService;
 import backend.yagodnoye.Services.TripService;
-import jakarta.websocket.server.PathParam;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,44 +18,42 @@ public class TripParticipantController {
     private Trip trip;
 
     private final TripParticipantService service;
-    private final AuthorizationService authorizationService;
+    private final BerryPersonService berryPersonService;
     private final TripService tripService;
 
-    public TripParticipantController(TripParticipantService service, AuthorizationService authorizationService, TripService tripService) {
+    public TripParticipantController(TripParticipantService service, BerryPersonService berryPersonService, TripService tripService) {
         this.service = service;
-        this.authorizationService = authorizationService;
+        this.berryPersonService = berryPersonService;
         this.tripService = tripService;
     }
 
-    @PostMapping("/application")
+    @PostMapping("/application") //personID, letter
     public TripParticipant addTripParticipant(
-            @RequestParam(name = "personID") String berryPersonIdStr,
-            @PathVariable("tripID") String tripIdStr,
+            @RequestParam(name = "personID") Long berryPersonId,
+            @PathVariable("tripID") Long tripId,
             @RequestParam(name = "letter") String letter
-    ){
-        return service.addTripParticipant(authorizationService.findById(Long.parseLong(berryPersonIdStr)), tripService.findTripById(Long.parseLong(tripIdStr)), letter);
+    ) throws PersonNotFoundException, AlreadyExistsException, TripNotFoundException {
+        return service.addTripParticipant(berryPersonService.findById(berryPersonId), tripService.findTripById(tripId), letter);
     }
 
-    @GetMapping("/application")
-    public TripParticipant getTripParticipant(@PathVariable String tripID, @RequestParam(name = "personID") String personIDStr){
-        return service.getTripParticipant(authorizationService.findById(Long.parseLong(personIDStr)), tripService.findTripById(Long.parseLong(tripID)));
+    @GetMapping("/application") //personID
+    public TripParticipant getTripParticipant(@PathVariable Long tripID, @RequestParam(name = "personID") Long personID) throws PersonNotFoundException, TripNotFoundException {
+        return service.getTripParticipant(berryPersonService.findById(personID), tripService.findTripById(tripID));
     }
 
-    @GetMapping("/users")
-    public List<TripParticipant> getAllTripParticipants(@PathVariable String tripID){
-        return service.getAllTripParticipants(tripService.findTripById(Long.parseLong(tripID)));
+    @GetMapping("/users") //
+    public List<TripParticipant> getAllTripParticipants(@PathVariable Long tripID) throws TripNotFoundException {
+        return service.getAllTripParticipants(tripService.findTripById(tripID));
     }
 
-    @PostMapping("/users/{personID}")
-    public void approveTripParticipant(@PathVariable(name = "tripID") String tripID, @PathVariable(name = "personID") String personIdStr){
-        System.out.println(personIdStr + " is the ID you are searching for in the trip" + tripID);
-        service.approveTripParticipant(authorizationService.findById(Long.parseLong(personIdStr)), tripService.findTripById(Long.parseLong(tripID)));
+    @PutMapping("/users") //personID
+    public void approveTripParticipant(@PathVariable(name = "tripID") Long tripID, @RequestParam(name = "personID") Long personId) throws PersonNotFoundException, TripNotFoundException {
+        service.approveTripParticipant(berryPersonService.findById(personId), tripService.findTripById(tripID));
     }
 
-    @DeleteMapping("/users/{personID}")
-    public void refuseTripParticipant(@PathVariable(name = "tripID") String tripID, @PathVariable(name = "personID") String personIDStr){
-        service.refuseTripParticipant(authorizationService.findById(Long.parseLong(personIDStr)), tripService.findTripById(Long.parseLong((tripID))));
-
+    @DeleteMapping("/users") //personID
+    public void refuseTripParticipant(@PathVariable(name = "tripID") Long tripID, @RequestParam(name = "personID") Long personID) throws PersonNotFoundException, TripNotFoundException {
+        service.refuseTripParticipant(berryPersonService.findById(personID), tripService.findTripById(tripID));
     }
 
 }
