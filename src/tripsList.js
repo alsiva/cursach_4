@@ -6,10 +6,11 @@ import {
     CardActions,
     CardContent,
     CardHeader,
-    CircularProgress,
+    LinearProgress,
     Link,
     Stack,
-    TextField, Typography
+    TextField,
+    Typography
 } from "@mui/material";
 import TripApplication from "./tripApplication";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -109,18 +110,18 @@ async function getFilteredTrips(filterDate) {
 const dateTripsViewFormat = 'MM/YYYY'
 
 function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSchedule}) {
-    const [trips, setTrips] = useState(null)
-    const [filterDate, setFilterDate] = useState(dayjs())
+    const [trips, setTrips] = useState([])
+    const [filterDate, setFilterDate] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         if (filterDate == null || filterDate.isValid()) {
-            getFilteredTrips(filterDate).then(trips => setTrips(trips))
+            setIsLoading(true)
+            getFilteredTrips(filterDate)
+                .then(trips => setTrips(trips))
+                .finally(() => setIsLoading(false))
         }
     }, [filterDate])
-
-    if (trips == null) {
-        return <CircularProgress/>
-    }
 
     async function addTrip(title, description, startDate, endDate) {
         const response = await fetch('/api/trips', {
@@ -170,6 +171,7 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
                 flexWrap: 'wrap',
                 justifyContent: 'space-between',
                 paddingX: 2,
+                marginBottom: 2,
                 alignItems: 'center'
             }}>
                 <Typography variant="h5">List of trips</Typography>
@@ -185,90 +187,89 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
                 />
             </Box>
 
-            <Box direction="row" sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-                boxShadow: 2,
-                backgroundColor: '#f7f7f7',
-                border: 1,
-                borderRadius: 3,
-                marginY: 3,
-                paddingY: 2
-            }}
-            >
-                {trips.map(trip => {
+            {isLoading && (
+                <LinearProgress />
+            )}
 
-                    const dateString = `${trip.startDate} - ${trip.endDate}`
-                    return (
-                        <Card
-                            sx={{maxWidth: 475, margin: 1, boxShadow: 1, border: 1, borderColor: '#dbdbdb'}}
-                        >
-                            <CardHeader
-                                avatar={trip.mainOrganizerID === userInfo.id ? (
-                                        <Avatar sx={{bgcolor: '#fc4903'}} aria-label="user-role">
-                                            Org
-                                        </Avatar>
-                                    )
-                                    : (
-                                        <Avatar sx={{bgcolor: '#43bf00'}} aria-label="user-role">
-                                            Prt
-                                        </Avatar>
-                                    )
-                                }
-                                title={trip.title}
-                                titleTypographyProps={{variant: 'h6'}}
-                                subheader={dateString}
-                                action={
-                                    <>
-                                        {trip.mainOrganizerID === userInfo.id && (
-                                            <Button
-                                                size="small"
-                                                startIcon={<DeleteIcon/>}
-                                                onClick={() => deleteTrip(trip.id)}
-                                            />
-                                        )}
+            {trips.length > 0 && (
+                <Box direction="row" sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
+                    boxShadow: 'inset 0px 0px 5px 0px rgba(0,0,0,0.2)',
+                    backgroundColor: '#f7f7f7',
+                    marginBottom: 2,
+                    paddingY: 2
+                }}
+                >
+                    {trips.map(trip => {
+                        const isMainOrg = trip.mainOrganizerID === userInfo.id
 
-                                    </>
-                                }
-                            />
-                            <CardContent>
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                    sx={{
-                                        display: '-webkit-box',
-                                        overflow: 'hidden',
-                                        WebkitBoxOrient: 'vertical',
-                                        WebkitLineClamp: 3,
-                                    }}
-                                >
-                                    {lorem}
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Stack direction="row" spacing={2}>
-                                    <Link
-                                        component="button"
+                        return (
+                            <Card
+                                key={trip.id}
+                                sx={{maxWidth: 475, margin: 1, boxShadow: 1, border: 1, borderColor: '#dbdbdb'}}
+                            >
+                                <CardHeader
+                                    avatar={
+                                        <Avatar sx={{bgcolor: isMainOrg ? '#fc4903': '#43bf00'}} aria-label="user-role">
+                                            {isMainOrg ? 'Org' : 'Prt'}
+                                        </Avatar>
+                                    }
+                                    title={trip.title}
+                                    titleTypographyProps={{variant: 'h6'}}
+                                    subheader={`${trip.startDate} - ${trip.endDate}`}
+                                    action={
+                                        <>
+                                            {isMainOrg && (
+                                                <Button
+                                                    size="small"
+                                                    startIcon={<DeleteIcon/>}
+                                                    onClick={() => deleteTrip(trip.id)}
+                                                />
+                                            )}
+
+                                        </>
+                                    }
+                                />
+                                <CardContent>
+                                    <Typography
                                         variant="body2"
-                                        onClick={() => setSelectedSettlement(trip)}
-                                    >View settlement</Link>
-                                    <Link
-                                        component="button"
-                                        variant="body2"
-                                        onClick={() => setSelectedTrip(trip)}
-                                    >View application</Link>
-                                    <Link
-                                        component="button"
-                                        variant="body2"
-                                        onClick={() => setSelectedSchedule(trip)}
-                                    >View schedule</Link>
-                                </Stack>
-                            </CardActions>
-                        </Card>
-                    )
-                })}
-            </Box>
+                                        color="text.secondary"
+                                        sx={{
+                                            display: '-webkit-box',
+                                            overflow: 'hidden',
+                                            WebkitBoxOrient: 'vertical',
+                                            WebkitLineClamp: 3,
+                                        }}
+                                    >
+                                        {lorem}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Stack direction="row" spacing={2}>
+                                        <Link
+                                            component="button"
+                                            variant="body2"
+                                            onClick={() => setSelectedSettlement(trip)}
+                                        >View settlement</Link>
+                                        <Link
+                                            component="button"
+                                            variant="body2"
+                                            onClick={() => setSelectedTrip(trip)}
+                                        >View application</Link>
+                                        <Link
+                                            component="button"
+                                            variant="body2"
+                                            onClick={() => setSelectedSchedule(trip)}
+                                        >View schedule</Link>
+                                    </Stack>
+                                </CardActions>
+                            </Card>
+                        );
+                    })}
+                </Box>
+            )}
 
             {userInfo.right === 'organizer' && (
                 <CreateTrip addTrip={addTrip}/>
