@@ -85,7 +85,7 @@ function TripListView({userInfo}) {
     }
 }
 
-async function getTrips() {
+async function getFilteredTrips(filterDate) {
     await delay(1000)
 
     const response = await fetch('/api/trips', {
@@ -95,15 +95,28 @@ async function getTrips() {
         },
     })
 
-    return await response.json()
+    let json = await response.json();
+    return json.filter(trip => {
+        if (filterDate == null) {
+            return true
+        }
+
+        return filterDate.startOf('month') <= dayjs(trip.startDate) && dayjs(trip.startDate) <= filterDate.endOf('month')
+    })
 }
+
+
+const dateTripsViewFormat = 'MM/YYYY'
 
 function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSchedule}) {
     const [trips, setTrips] = useState(null)
+    const [filterDate, setFilterDate] = useState(dayjs())
 
     useEffect(() => {
-        getTrips().then(json => setTrips(json))
-    }, [])
+        if (filterDate == null || filterDate.isValid()) {
+            getFilteredTrips(filterDate).then(trips => setTrips(trips))
+        }
+    }, [filterDate])
 
     if (trips == null) {
         return <CircularProgress/>
@@ -152,11 +165,30 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
 
     return (
         <div>
-            <Typography variant="h5">List of trips</Typography>
+            <Box sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                paddingX: 2,
+                alignItems: 'center'
+            }}>
+                <Typography variant="h5">List of trips</Typography>
+                <DesktopDatePicker
+                    views={['year', 'month']}
+                    label="Trips year and month"
+                    inputFormat={dateTripsViewFormat}
+                    value={filterDate}
+                    onChange={(date) => {
+                        setFilterDate(date)
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                />
+            </Box>
+
             <Box direction="row" sx={{
                 display: 'flex',
                 flexWrap: 'wrap',
-                justifyContent: 'space-evenly',
+                justifyContent: 'center',
                 boxShadow: 2,
                 backgroundColor: '#f7f7f7',
                 border: 1,
@@ -166,13 +198,13 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
             }}
             >
                 {trips.map(trip => {
+
                     const dateString = `${trip.startDate} - ${trip.endDate}`
                     return (
                         <Card
-                            sx={{maxWidth: 400, margin: 1, boxShadow: 1, border: 1, borderColor: '#dbdbdb'}}
+                            sx={{maxWidth: 475, margin: 1, boxShadow: 1, border: 1, borderColor: '#dbdbdb'}}
                         >
                             <CardHeader
-                                //helperText={startDate == null ? 'Can\'t be empty' : helperText}
                                 avatar={trip.mainOrganizerID === userInfo.id ? (
                                         <Avatar sx={{bgcolor: '#fc4903'}} aria-label="user-role">
                                             Org
@@ -188,13 +220,16 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
                                 titleTypographyProps={{variant: 'h6'}}
                                 subheader={dateString}
                                 action={
-                                    <Button
-                                        size="small"
-                                        startIcon={<DeleteIcon/>}
-                                        onClick={() => deleteTrip(trip.id)}
-                                    >
-                                        Delete trip
-                                    </Button>
+                                    <>
+                                        {trip.mainOrganizerID === userInfo.id && (
+                                            <Button
+                                                size="small"
+                                                startIcon={<DeleteIcon/>}
+                                                onClick={() => deleteTrip(trip.id)}
+                                            />
+                                        )}
+
+                                    </>
                                 }
                             />
                             <CardContent>
