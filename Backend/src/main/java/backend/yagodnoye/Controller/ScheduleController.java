@@ -40,8 +40,9 @@ public class ScheduleController {
     public Schedule addSchedule(
             @PathVariable(name = "tripID") Long tripID,
             @RequestParam(name = "startTime") LocalDateTime startTime,
-            @RequestParam(name = "endTime") LocalDateTime endTime
+            @RequestParam(name = "endTime") LocalDateTime endTime,
+            @RequestParam(name = "description") String description
     ) throws AlreadyExistsException, TripNotFoundException {
-        return service.addSchedule(tripID, startTime, endTime);
+        return service.addSchedule(tripID, startTime, endTime, description);
     }
 }

@@ -20,13 +20,16 @@ public class Schedule {
     @Id
     private LocalDateTime end;
 
+    private String description;
+
     public Schedule() {
     }
 
-    public Schedule(Trip trip, LocalDateTime start, LocalDateTime end) {
+    public Schedule(Trip trip, LocalDateTime start, LocalDateTime end, String description) {
         this.trip = trip;
         this.start = start;
         this.end = end;
+        this.description = description;
     }
 
     public Trip getTrip() {

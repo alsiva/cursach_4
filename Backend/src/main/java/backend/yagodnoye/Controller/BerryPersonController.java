@@ -33,8 +33,7 @@ public class BerryPersonController {
 
     @PostMapping("/users")
     @ResponseBody
-    public BerryPerson register
-            (@RequestParam(name="rightId") int rightId,
+    public BerryPerson register(
              @RequestParam(name="email") String email,
              @RequestParam(name="username") String username,
              @RequestParam(name="password") String password,
@@ -45,6 +44,7 @@ public class BerryPersonController {
              @RequestParam(name="telegram") String telegram,
              @RequestParam(name="vk") String vk) throws RegisterException {
         LocalDate date = LocalDate.parse(dateOfBirth);
+        int rightId = 1;
         Sex gender = Sex.valueOf(sex);
         String telegram1 = telegram.equals("") ? null : telegram;
         String vk1 = vk.equals("") ? null:vk;

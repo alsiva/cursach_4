@@ -33,10 +33,10 @@ public class ScheduleService {
         repository.delete(scheduleOptional.get());
     }
 
-    public Schedule addSchedule(Long tripID, LocalDateTime startTime, LocalDateTime endTime) throws TripNotFoundException, AlreadyExistsException {
+    public Schedule addSchedule(Long tripID, LocalDateTime startTime, LocalDateTime endTime, String description) throws TripNotFoundException, AlreadyExistsException {
         if (!tripService.tripExists(tripID)) throw new TripNotFoundException();
         Optional<Schedule> scheduleOptional = repository.findByTrip_IdEqualsAndStartEqualsAndEndEquals(tripID, startTime, endTime);
         if(scheduleOptional.isPresent()) throw new AlreadyExistsException();
-        return repository.save(new Schedule(tripService.findTripById(tripID), startTime, endTime));
+        return repository.save(new Schedule(tripService.findTripById(tripID), startTime, endTime, description));
     }
 }
