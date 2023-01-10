@@ -1,6 +1,19 @@
 import React, {useEffect, useState} from 'react'
-import {Box, Button, Chip, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack} from "@mui/material";
+import {
+    Avatar,
+    Box,
+    Button, CardContent,
+    CardHeader,
+    Chip,
+    CircularProgress,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    Stack
+} from "@mui/material";
 import {delay} from "./utils";
+import Card from "@mui/material/Card";
 
 
 async function getHouses() {
@@ -57,11 +70,19 @@ function SettlementManagement({tripId, userInfo}) {
 
     return (
         <div>
-            <ul>
-                {info.map(({house, settled}) => {
-                    return (
-                        <li key={house.id}>
-                            <h4>{house.name}</h4>
+            {info.map(({house, settled}) => {
+                return (
+                    <Card key={house.id}
+                          sx={{margin: 1, boxShadow: 1, border: 1, borderColor: '#dbdbdb', flex: '1 1 400px'}}>
+
+                        <CardHeader
+                            avatar={
+                                <Avatar sx={{bgcolor: "#f0d400"}} aria-label="house_name">
+                                    {house.name}
+                                </Avatar>
+                            }
+                        />
+                        <CardContent>
                             <Stack direction={"row"} spacing={1}>
                                 {settled.map(settlement => (
                                     <Chip
@@ -79,10 +100,11 @@ function SettlementManagement({tripId, userInfo}) {
                                     />
                                 ))}
                             </Stack>
-                        </li>
-                    )
-                })}
-            </ul>
+                        </CardContent>
+                    </Card>
+                )
+            })}
+
             <div>
                 <h4>Not settled</h4>
                 <ul>
