@@ -35,4 +35,13 @@ public class SettlementController {
         service.settleBerryPerson(tripID, personID, houseID);
     }
 
+    @DeleteMapping("/settlement")
+    public void unSettlePerson(
+            @PathVariable(name = "tripID") Long tripID,
+            @RequestParam(name = "personID") Long personID,
+            @RequestParam(name = "houseID") Long houseID
+    ) throws HouseNotFoundException, PersonNotFoundException, TripNotFoundException {
+        service.unSettlePerson(tripID, personID, houseID);
+    }
+
 }

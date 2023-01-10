@@ -27,7 +27,7 @@ public class TripParticipantController {
         this.tripService = tripService;
     }
 
-    @PostMapping("/application") //personID, letter
+    @PutMapping("/application") //personID, letter
     public TripParticipant addTripParticipant(
             @RequestParam(name = "personID") Long berryPersonId,
             @PathVariable("tripID") Long tripId,

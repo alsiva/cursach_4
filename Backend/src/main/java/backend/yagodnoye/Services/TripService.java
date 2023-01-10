@@ -45,4 +45,7 @@ public class TripService {
         return tripOptional.get();
     }
 
+    public boolean tripExists(Long tripID) {
+        return tripRepository.findByIdEquals(tripID).isPresent();
+    }
 }

@@ -8,11 +8,11 @@ import jakarta.persistence.*;
 @IdClass(TripParticipantID.class)
 public class TripParticipant {
     @Id
-    @ManyToOne
+    @ManyToOne(optional = false, cascade = CascadeType.REMOVE)
     private BerryPerson berryPerson;
 
     @Id
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Trip trip;
 
     private String letter;

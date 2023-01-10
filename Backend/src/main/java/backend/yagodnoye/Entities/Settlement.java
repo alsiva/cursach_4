@@ -9,17 +9,17 @@ import jakarta.persistence.*;
 @IdClass(SettlementID.class)
 public class Settlement {
     @Id
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.DETACH)
     @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;
 
     @Id
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.DETACH)
     @JoinColumn(name = "berry_person_id", nullable = false)
     private BerryPerson berryPerson;
 
     @Id
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.DETACH)
     @JoinColumn(name = "house_id", nullable = false)
     private House house;
 

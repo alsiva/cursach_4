@@ -1,6 +1,7 @@
 package backend.yagodnoye.Entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -40,7 +41,7 @@ public class BerryPerson {
     @Column(unique = true)
     private String vk;
 
-    @OneToMany(mappedBy = "mainOrganizer")
+    @OneToMany(mappedBy = "mainOrganizer", cascade = CascadeType.DETACH)
     private Collection<Trip> organizingTrips;
 
     public BerryPerson(){
