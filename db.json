@@ -186,12 +186,6 @@
       "tripId": 1,
       "houseId": 11,
       "id": 4
-    },
-    {
-      "userId": 7,
-      "tripId": 1,
-      "houseId": 12,
-      "id": 5
     }
   ],
   "schedule": [

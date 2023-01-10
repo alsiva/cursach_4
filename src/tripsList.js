@@ -20,14 +20,21 @@ import {DesktopDatePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import TripSettlement from "./tripSettlement";
 import TripSchedule from "./TripsSchedule";
-import TextareaAutosize from '@mui/base/TextareaAutosize';
 import Card from '@mui/material/Card';
+import CreateTrip from "./createTrip";
 
 
 export default function TripsList({userInfo, logout}) {
     return (
         <div>
-            <Stack alignItems="center" direction="row" spacing={2}>
+            <Stack alignItems="center" direction="row" spacing={2}
+                   sx={{
+                       height: 100,
+                       bgcolor: '#7afc28',
+                       paddingX: 5,
+                       marginBottom: 2
+                   }}
+            >
                 <h2>Hi, {userInfo.name}</h2>
                 <Button
                     size="small"
@@ -57,7 +64,12 @@ function TripListView({userInfo}) {
                     userInfo={userInfo}
                     setSelectedSettlement={trip => setCurrent({page: 'settlement', trip: trip})}
                     setSelectedSchedule={trip => setCurrent({page: 'schedule', trip: trip})}
+                    setCreateTrip={() => setCurrent({page: 'createTrip'})}
                 />
+            )
+        case 'createTrip':
+            return (
+                <CreateTrip userInfo={userInfo} back={returnToMainPage}/>
             )
         case 'application':
             return (
@@ -109,7 +121,7 @@ async function getFilteredTrips(filterDate) {
 
 const dateTripsViewFormat = 'MM/YYYY'
 
-function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSchedule}) {
+function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSchedule, setCreateTrip}) {
     const [trips, setTrips] = useState([])
     const [filterDate, setFilterDate] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
@@ -122,33 +134,6 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
                 .finally(() => setIsLoading(false))
         }
     }, [filterDate])
-
-    async function addTrip(title, description, startDate, endDate) {
-        const response = await fetch('/api/trips', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                title: title,
-                startDate: startDate,
-                endDate: endDate,
-                mainOrganizerID: userInfo.id
-            }),
-        })
-
-        const json = await response.json()
-
-        setTrips(prev => [
-            ...prev, {
-                id: json.id,
-                title: json.title,
-                startDate: json.startDate,
-                endDate: json.endDate,
-                mainOrganizerID: userInfo.id
-            }
-        ])
-    }
 
     async function deleteTrip(tripToRemoveId) {
         const response = await fetch('/api/trips/' + tripToRemoveId, {
@@ -175,6 +160,11 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
                 alignItems: 'center'
             }}>
                 <Typography variant="h5">List of trips</Typography>
+                {userInfo.right === 'organizer' && (
+                    <Button size="small" onClick={() => setCreateTrip()}>
+                        Create new trip
+                    </Button>
+                )}
                 <DesktopDatePicker
                     views={['year', 'month']}
                     label="Trips year and month"
@@ -188,7 +178,7 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
             </Box>
 
             {isLoading && (
-                <LinearProgress />
+                <LinearProgress/>
             )}
 
             {trips.length > 0 && (
@@ -208,11 +198,12 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
                         return (
                             <Card
                                 key={trip.id}
-                                sx={{maxWidth: 475, margin: 1, boxShadow: 1, border: 1, borderColor: '#dbdbdb'}}
+                                sx={{margin: 1, boxShadow: 1, border: 1, borderColor: '#dbdbdb', flex: '1 1 400px'}}
                             >
                                 <CardHeader
                                     avatar={
-                                        <Avatar sx={{bgcolor: isMainOrg ? '#fc4903': '#43bf00'}} aria-label="user-role">
+                                        <Avatar sx={{bgcolor: isMainOrg ? '#fc4903' : '#43bf00'}}
+                                                aria-label="user-role">
                                             {isMainOrg ? 'Org' : 'Prt'}
                                         </Avatar>
                                     }
@@ -271,88 +262,11 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
                 </Box>
             )}
 
-            {userInfo.right === 'organizer' && (
-                <CreateTrip addTrip={addTrip}/>
-            )}
+
         </div>
     )
 }
-
-const DATEPICKER_FORMAT = "DD/MM/YYYY"
-
-function CreateTrip({addTrip}) {
-    const [title, setTitle] = useState("")
-    const [startDate, setStartDate] = useState(dayjs().add(1, 'week'))
-    const [endDate, setEndDate] = useState(dayjs().add(2, 'week'))
-    const [description, setDescription] = useState("")
-
-
-    return (
-        <div>
-            <h2>Create trip</h2>
-            <div>
-                <Stack maxWidth={400} spacing={2}>
-                    <TextField
-                        label="Title"
-                        variant="outlined"
-                        value={title}
-                        onChange={(e) => {
-                            setTitle(e.target.value)
-                        }}
-                    />
-                    <DesktopDatePicker
-                        label="Start date"
-                        inputFormat={DATEPICKER_FORMAT}
-                        value={startDate}
-                        onChange={(date) => {
-                            setStartDate(date)
-                        }}
-                        renderInput={({error, helperText, ...restParams}) => (
-                            <TextField
-                                error={startDate == null ? true : error}
-                                helperText={startDate == null ? 'Can\'t be empty' : helperText}
-                                {...restParams}
-                            />
-                        )}
-                    />
-                    <DesktopDatePicker
-                        label="End date"
-                        inputFormat={DATEPICKER_FORMAT}
-                        value={endDate}
-                        onChange={(date) => {
-                            setEndDate(date)
-                        }}
-                        renderInput={({error, helperText, ...restParams}) => (
-                            <TextField
-                                error={startDate == null ? true : error}
-                                helperText={startDate == null ? 'Can\'t be empty' : helperText}
-                                {...restParams}
-                            />
-                        )}
-                    />
-                    <TextareaAutosize
-                        minRows={3}
-                        placeholder="Trip description"
-                        onChange={e => setDescription(e.currentTarget.value)}
-                    />
-                    <Button
-                        variant="outlined"
-                        disabled={startDate == null || endDate == null}
-                        onClick={() => {
-                            addTrip(title, description, startDate.format(API_FORMAT), endDate.format(API_FORMAT));
-                        }}
-                    >
-                        Add trip
-                    </Button>
-                </Stack>
-            </div>
-        </div>
-    )
-}
-
-const API_FORMAT = 'YYYY/MM/DD';
 
 const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in congue lectus. Suspendisse eget congue nulla. Pellentesque non nisl lorem. Cras porta lectus vitae dolor tincidunt, et convallis augue rhoncus. Nulla at sagittis lacus, vitae imperdiet eros. Morbi tincidunt ullamcorper justo, sed facilisis metus posuere eu. Quisque fringilla, augue a hendrerit tristique, sapien augue ornare felis, ut varius lacus elit a enim. Quisque id enim a velit laoreet condimentum vel vel velit. Phasellus nunc elit, commodo quis urna eu, convallis maximus ante.\n' +
     '\n' +
     'In feugiat felis eget ipsum laoreet, ut interdum quam tempor. Nullam porttitor pellentesque mi vitae lacinia. Maecenas aliquet augue vitae felis efficitur facilisis. Ut mollis laoreet metus quis lacinia. Curabitur id lacinia lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Morbi suscipit varius mauris ut pulvinar. Nullam congue, augue nec mattis sodales, magna velit hendrerit mauris, ac ornare magna tellus eu ipsum.'
-

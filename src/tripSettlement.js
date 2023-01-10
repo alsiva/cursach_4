@@ -20,7 +20,6 @@ async function getHouses() {
 export default function TripSettlement({trip, userInfo, back}) {
     return (
         <div>
-            <h1>There will be settlement</h1>
             <Button onClick={back}>back to trip list</Button>
             <SettlementManagement tripId={trip.id} userInfo={userInfo}/>
         </div>
