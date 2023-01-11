@@ -30,7 +30,7 @@ export default function TripsList({userInfo, logout}) {
             <Stack alignItems="center" direction="row" spacing={2}
                    sx={{
                        height: 100,
-                       bgcolor: '#7afc28',
+                       bgcolor: '#43bf00',
                        paddingX: 5,
                        marginBottom: 2
                    }}

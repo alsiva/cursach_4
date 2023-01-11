@@ -16,7 +16,7 @@ public class BerryPersonConfiguration {
     @Bean
     CommandLineRunner commandLineRunner(BerryPersonRepository repository){
         return args -> {
-            BerryPerson Bilguun = new BerryPerson(1,
+            BerryPerson Bilguun = new BerryPerson(3,
                     "bilguuk124@gmail.com",
                     "bilguuk124",
                     "Gungun124",

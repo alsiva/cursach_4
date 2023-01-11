@@ -62,6 +62,13 @@
       "name": "kalugina",
       "right": "participant",
       "id": 9
+    },
+    {
+      "email": "mamamia@gmail.com",
+      "password": "$2a$10$JSpQAc9TnZMEwY68WOHf0Ow6.EK.zRf7G54uAgZAs1kIetmrhGcQK",
+      "name": "Max",
+      "right": "participant",
+      "id": 10
     }
   ],
   "trips": [
@@ -143,6 +150,13 @@
       "letter": "I am bibaboba person",
       "state": "confirmed",
       "id": 6
+    },
+    {
+      "tripId": 1,
+      "userId": 10,
+      "letter": "Всем привет!",
+      "state": "applied",
+      "id": 7
     }
   ],
   "houses": [
@@ -170,16 +184,16 @@
       "id": 1
     },
     {
-      "userId": 5,
-      "tripId": 1,
-      "houseId": 11,
-      "id": 3
-    },
-    {
       "userId": 6,
       "tripId": 1,
       "houseId": 11,
       "id": 4
+    },
+    {
+      "userId": 5,
+      "tripId": 1,
+      "houseId": 11,
+      "id": 5
     }
   ],
   "schedule": [

@@ -1,15 +1,32 @@
 import React, {useState} from 'react';
-import {Alert, Box, Button, CircularProgress, Link, Stack, TextField, Typography} from "@mui/material";
+import {
+    Alert,
+    Box,
+    Button,
+    CircularProgress,
+    Link,
+    MenuItem,
+    Select,
+    Stack,
+    TextField,
+    Typography
+} from "@mui/material";
 import LoginIcon from '@mui/icons-material/Login';
 import RegisterIcon from '@mui/icons-material/PersonAddAlt1';
 import {delay} from "./utils";
 import './index.css';
+import {DesktopDatePicker} from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 
 export default function Login({onLogin}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [surname, setSurname] = useState("");
+    const [sex, setSex] = useState('man');
+    const [dob, setDob] = useState(dayjs())
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
@@ -20,15 +37,11 @@ export default function Login({onLogin}) {
         setIsLoading(true)
         setError("")
 
-        const response = await fetch('/api/login', {
+        const response = await fetch(`/api/login?credential=${email}&password=${password}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
+            }
         })
 
         await delay(500)
@@ -41,15 +54,23 @@ export default function Login({onLogin}) {
 
         const json = await response.json()
 
-        if (json.user.right === "ban") {
+        console.log('Our json')
+        console.log(json)
+
+        let rightValue = '';
+        if (json.rightId === 1) {
+            rightValue = 'participant'
+        } else if (json.rightId === 2) {
             setError("You are banned")
             return
+        } else if (json.rightId === 3) {
+            rightValue = 'organizer'
         }
 
         const userInfo = {
-            id: json.user.id,
-            name: json.user.name,
-            right: json.user.right
+            id: json.id,
+            name: json.name,
+            right: rightValue
         }
 
         onLogin(userInfo)
@@ -59,21 +80,25 @@ export default function Login({onLogin}) {
         setError("")
         setIsLoading(true);
 
-        const response = await fetch('/api/users', {
+        console.log(`Email is ${email}`)
+        console.log(`Username is ${username}`)
+        console.log(`Surname is ${surname}`)
+        console.log(`Name is ${firstName}`)
+        console.log(`Sex is ${sex}`)
+        console.log(`Date of birth is ${dayjs(dob).format('YYYY-MM-DD')}`)
+
+        const response = await fetch(`/api/users?email=${email}&username=${username}&password=${password}&name=${firstName}&surname=${surname}&sex=${sex}&dateOfBirth=${dayjs(dob).format('YYYY-MM-DD')}&telegram=&vk=`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: username,
-                email: email,
-                password: password,
-                right: "participant"
-            }),
+            }
         })
 
         await delay(1000)
         setIsLoading(false)
+
+        console.log('Register response')
+        console.log(response)
 
         if (response.status === 409) {
             setError(`user ${username} already exists`)
@@ -95,11 +120,23 @@ export default function Login({onLogin}) {
 
         const json = await response.json()
 
+        console.log('Json')
+        console.log(json)
+
+        let rightValue = '';
+        if (json.rightId === 1) {
+            rightValue = 'participant'
+        } else if (json.rightId === 2) {
+            setError("You are banned")
+            return
+        } else if (json.rightId === 3) {
+            rightValue = 'organizer'
+        }
 
         const userInfo = {
-            id: json.user.id,
-            name: json.user.name,
-            right: json.user.right
+            id: json.id,
+            name: json.name,
+            right: rightValue
         }
 
         onLogin(userInfo)
@@ -133,8 +170,9 @@ export default function Login({onLogin}) {
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexDirection: 'column',
-                    height: 400,
+                    height: 450,
                     width: 400,
+                    paddingY: 2,
 
                     border: 1,
                     borderRadius: 5,
@@ -147,15 +185,65 @@ export default function Login({onLogin}) {
                 >
                     <Stack maxWidth={300} spacing={1} sx={{py: 2}}>
                         {!isLoginSelected && (
-                            <TextField
-                                label="Name"
-                                variant="outlined"
-                                value={username}
-                                onChange={(e) => {
-                                    setError("")
-                                    setUsername(e.target.value)
-                                }}
-                            />
+                            <>
+
+                                <TextField
+                                    label="Name"
+                                    variant="outlined"
+                                    value={username}
+                                    onChange={(e) => {
+                                        setError("")
+                                        setUsername(e.target.value)
+                                    }}
+                                />
+
+                                <TextField
+                                    label="FirstName"
+                                    variant="outlined"
+                                    value={firstName}
+                                    onChange={(e) => {
+                                        setError("")
+                                        setFirstName(e.target.value)
+                                    }}
+                                />
+
+                                <TextField
+                                    label="LastName"
+                                    variant="outlined"
+                                    value={surname}
+                                    onChange={(e) => {
+                                        setError("")
+                                        setSurname(e.target.value)
+                                    }}
+                                />
+
+                                <Select
+                                    value={sex}
+                                    label="Sex"
+                                    onChange={e => setSex(e.target.value)}
+                                >
+                                    <MenuItem value='man'>{'man'}</MenuItem>
+                                    <MenuItem value='woman'>{'woman'}</MenuItem>
+                                </Select>
+
+                                <DesktopDatePicker
+                                    label="Date of birth"
+                                    inputFormat={"DD/MM/YYYY"}
+                                    value={dob}
+                                    onChange={(date) => {
+                                        setDob(date)
+                                    }}
+                                    renderInput={({error, helperText, ...restParams}) => (
+                                        <TextField
+                                            error={dob == null ? true : error}
+                                            helperText={dob == null ? 'Can\'t be empty' : helperText}
+                                            {...restParams}
+                                        />
+                                    )}
+                                />
+
+
+                            </>
                         )}
                         <TextField
                             label="Email"
