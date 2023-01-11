@@ -22,14 +22,17 @@ export default function TripApplication({trip, userInfo, back}) {
 async function getTripApplications(tripId) {
     await delay(500)
 
-    const response = await fetch('/api/applications?_expand=user&tripId=' + tripId, {
+    const response = await fetch(`/api/trips/${tripId}/users`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
     })
 
-    return await response.json()
+    const json = await response.json()
+    console.log('JSON')
+    console.log(json)
+    return json
 }
 
 function TripManagement({tripId}) {
@@ -152,7 +155,7 @@ function ParticipantStatus({state, changeStatus, id}) {
 async function getApplicationStatus(tripId, userId) {
     await delay(500)
 
-    const response = await fetch(`/api/applications?tripId=${tripId}&userId=${userId}`, {
+    const response = await fetch(`/api/trips/${tripId}/application?personID=${userId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -160,10 +163,17 @@ async function getApplicationStatus(tripId, userId) {
     })
 
     const array = await response.json()
-    if (array.length === 0) {
+
+    if (array.status === 404) {
         return {state: 'idle'}
     } else {
-        return array[0]
+        console.log('Application status')
+        console.log(array)
+        if (array.approved === false) {
+            return {state: 'applied'}
+        } else if (array.approved === true) {
+            return {state: 'confirmed'}
+        }
     }
 }
 
@@ -180,17 +190,12 @@ function ApplicationStatus({tripId, userId}) {
         setStatus(null)
         await delay(500)
 
-        const response = await fetch('/api/applications', {
-            method: 'POST',
+
+        const response = await fetch(`api/trips/${tripId}/application?personID=${userId}&letter=${letter}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                tripId: tripId,
-                userId: userId,
-                letter: letter,
-                state: 'applied',
-            }),
         })
 
         const status = await response.json()

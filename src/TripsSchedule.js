@@ -7,12 +7,19 @@ import {DateTimePicker} from "@mui/x-date-pickers";
 async function getSchedule(tripId) {
     await delay(500)
 
-    const response = await fetch('/api/schedule?tripId=' + tripId, {
+    const response = await fetch('/api/schedule?tripID=' + tripId, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
     })
+
+    console.log('Response')
+    console.log(response)
+
+    if (response.status === 404) {
+        return []
+    }
 
     return (await response.json()).map(schedule => (
         {
@@ -82,17 +89,18 @@ export default function TripSchedule({trip, userInfo, back}) {
 
     async function addSchedule(startTime, endTime, description) {
 
-        const response = await fetch('/api/schedule', {
+
+        const BACK_FORMAT = 'YYYY-MM-DDTHH:mm'
+        startTime = dayjs(startTime).format(BACK_FORMAT)
+        endTime = dayjs(endTime).format(BACK_FORMAT)
+        console.log('startTime')
+        console.log(startTime)
+
+        const response = await fetch(`/api/trips/${trip.id}/schedule?startTime=${startTime}&endTime=${endTime}&description=${description}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                tripId: trip.id,
-                startTime: startTime,
-                endTime: endTime,
-                description: description
-            }),
+            }
         })
 
         const json = await response.json()

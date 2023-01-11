@@ -136,7 +136,7 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
     }, [filterDate])
 
     async function deleteTrip(tripToRemoveId) {
-        const response = await fetch('/api/trips/' + tripToRemoveId, {
+        const response = await fetch(`/api/trips?id=${tripToRemoveId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -207,7 +207,7 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
                                             {isMainOrg ? 'Org' : 'Prt'}
                                         </Avatar>
                                     }
-                                    title={trip.title}
+                                    title={trip.name}
                                     titleTypographyProps={{variant: 'h6'}}
                                     subheader={`${trip.startDate} - ${trip.endDate}`}
                                     action={
@@ -234,7 +234,7 @@ function Trips({setSelectedTrip, userInfo, setSelectedSettlement, setSelectedSch
                                             WebkitLineClamp: 3,
                                         }}
                                     >
-                                        {lorem}
+                                        {trip.description}
                                     </Typography>
                                 </CardContent>
                                 <CardActions>

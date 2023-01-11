@@ -37,6 +37,9 @@ export default function Login({onLogin}) {
         setIsLoading(true)
         setError("")
 
+        console.log(email)
+        console.log(password)
+
         const response = await fetch(`/api/login?credential=${email}&password=${password}`, {
             method: 'POST',
             headers: {
@@ -67,9 +70,11 @@ export default function Login({onLogin}) {
             rightValue = 'organizer'
         }
 
+        //todo Обработай различные статусы, например когда человек заходит, а респонс при этом был не 200ok
         const userInfo = {
             id: json.id,
             name: json.name,
+            username: json.username,
             right: rightValue
         }
 

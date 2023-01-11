@@ -10,13 +10,32 @@ import dayjs from "dayjs";
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 
 
-export default function CreateTrip({addTrip, back}) {
+export default function CreateTrip({userInfo ,back}) {
     const [title, setTitle] = useState("")
     const [startDate, setStartDate] = useState(dayjs().add(1, 'week'))
     const [endDate, setEndDate] = useState(dayjs().add(2, 'week'))
     const [description, setDescription] = useState("")
     const DATEPICKER_FORMAT = "DD/MM/YYYY"
     const API_FORMAT = 'YYYY/MM/DD';
+    const BACK_FORMAT = "YYYY-MM-DD"
+
+    //todo Обработай различные статусы
+    async function addTrip(title, description, startDate, endDate) {
+        startDate = dayjs(startDate).format(BACK_FORMAT)
+        endDate = dayjs(endDate).format(BACK_FORMAT)
+        await fetch(`/api/trips?name=${title}&description=${description}&startDate=${startDate}&endDate=${endDate}&mainOrganizerUsername=${userInfo.username}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: title,
+                startDate: startDate,
+                endDate: endDate,
+                mainOrganizerID: userInfo.id
+            }),
+        })
+    }
 
     return (
         <Box sx={{
