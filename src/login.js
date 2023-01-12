@@ -37,8 +37,7 @@ export default function Login({onLogin}) {
         setIsLoading(true)
         setError("")
 
-        console.log(email)
-        console.log(password)
+
 
         const response = await fetch(`/api/login?credential=${email}&password=${password}`, {
             method: 'POST',
@@ -57,8 +56,6 @@ export default function Login({onLogin}) {
 
         const json = await response.json()
 
-        console.log('Our json')
-        console.log(json)
 
         let rightValue = '';
         if (json.rightId === 1) {
@@ -85,12 +82,6 @@ export default function Login({onLogin}) {
         setError("")
         setIsLoading(true);
 
-        console.log(`Email is ${email}`)
-        console.log(`Username is ${username}`)
-        console.log(`Surname is ${surname}`)
-        console.log(`Name is ${firstName}`)
-        console.log(`Sex is ${sex}`)
-        console.log(`Date of birth is ${dayjs(dob).format('YYYY-MM-DD')}`)
 
         const response = await fetch(`/api/users?email=${email}&username=${username}&password=${password}&name=${firstName}&surname=${surname}&sex=${sex}&dateOfBirth=${dayjs(dob).format('YYYY-MM-DD')}&telegram=&vk=`, {
             method: 'POST',
@@ -102,8 +93,7 @@ export default function Login({onLogin}) {
         await delay(1000)
         setIsLoading(false)
 
-        console.log('Register response')
-        console.log(response)
+
 
         if (response.status === 409) {
             setError(`user ${username} already exists`)
@@ -125,8 +115,7 @@ export default function Login({onLogin}) {
 
         const json = await response.json()
 
-        console.log('Json')
-        console.log(json)
+
 
         let rightValue = '';
         if (json.rightId === 1) {

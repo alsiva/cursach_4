@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react'
-import {Button, CircularProgress, MenuItem, Select} from "@mui/material";
+import {Button, CircularProgress} from "@mui/material";
 import {delay} from "./utils";
 
+
+//todo Не отображать людей которые подали заявку
 
 export default function TripApplication({trip, userInfo, back}) {
     return (
@@ -37,7 +39,6 @@ async function getTripApplications(tripId) {
 
 function TripManagement({tripId}) {
     const [applications, setApplications] = useState(null)
-    const [seeType, setSeeType] = useState('applied')
 
     useEffect(() => {
         getTripApplications(tripId).then(applications => setApplications(applications))
@@ -50,28 +51,27 @@ function TripManagement({tripId}) {
     return (
         <div>
             <h4>List of applications</h4>
-            <SetType seeType={seeType} setSeeType={setSeeType}/>
             <ul>
-                {applications.filter(application => application.state === seeType).map((application, index) => {
-                    const {user, letter, tripId, userId} = application
+                {applications.filter(application => application.approved === false).map((application, index) => {
+                    const {berryPerson, letter} = application
 
                     return (
-                        <li key={tripId + ":" + userId}>
-                            <h5>{user.name}</h5>
+                        <li key={berryPerson.id}>
+                            <h5>{berryPerson.name}</h5>
                             <p>
                                 {letter}
                             </p>
-                            <ParticipantStatus
-                                id={application.id}
-                                state={application.state}
-                                changeStatus={status => {
-                                    setApplications(prev => [
-                                        ...prev.slice(0, index),
-                                        {...application, state: status},
-                                        ...prev.slice(index + 1)
-                                    ])
+
+                            <Button
+                                variant="outlined"
+
+                                onClick={() => {
+                                    changeParticipantStatus(tripId, berryPerson.id)
+                                    setApplications(applications.filter(application => application.berryPerson !== berryPerson.id))
                                 }}
-                            />
+                            >
+                                Add person
+                            </Button>
                         </li>
                     );
                 })}
@@ -81,76 +81,16 @@ function TripManagement({tripId}) {
 }
 
 
-async function changeParticipantStatus(id, newState) {
-
-
-    const response = await fetch(`/api/applications/${id}`, {
-        method: 'PATCH',
+async function changeParticipantStatus(tripId, userId) {
+    const response = await fetch(`/api/trips/${tripId}/users?personID=${userId}`, {
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            state: newState,
-        }),
+        }
     })
-
 
     return await response.json()
 }
-
-function SetType({seeType, setSeeType}) {
-    return (
-        <Select
-            value={seeType}
-            label="SeeType"
-            onChange={e => setSeeType(e.target.value)}
-        >
-            <MenuItem value='applied'>{'applied'}</MenuItem>
-            <MenuItem value='confirmed'>{'confirmed'}</MenuItem>
-            <MenuItem value='rejected'>{'rejected'}</MenuItem>
-        </Select>
-    )
-}
-
-function ParticipantStatus({state, changeStatus, id}) {
-    const [isLoading, setIsLoading] = useState(false)
-
-    if (isLoading) {
-        return <CircularProgress/>
-    }
-
-    return (
-        <Select
-            value={state}
-            label="Aplicant status"
-            onChange={e => {
-                setIsLoading(true)
-                changeParticipantStatus(id, e.target.value).then(application => {
-                    changeStatus(application.state)
-                    setIsLoading(false)
-                })
-
-            }}
-        >
-            <MenuItem value='applied'>{'applied'}</MenuItem>
-            <MenuItem value='confirmed'>{'confirmed'}</MenuItem>
-            <MenuItem value='rejected'>{'rejected'}</MenuItem>
-        </Select>
-    )
-
-
-    // if (aplicantStatus === 'confirmed') {
-    //     return <Chip label="confirmed" color="success" />
-    // } else if (aplicantStatus === 'applied') {
-    //     return <Chip label="applied" color="primary" />
-    // } else if (aplicantStatus === 'rejected') {
-    //     return <Chip label="rejected" color="error"/>
-    // }
-    // //return <Chip label="unknown status" color="warning"></Chip>
-
-
-}
-
 
 async function getApplicationStatus(tripId, userId) {
     await delay(500)
@@ -164,11 +104,9 @@ async function getApplicationStatus(tripId, userId) {
 
     const array = await response.json()
 
-    if (array.status === 404) {
+    if (array.status === 500) {
         return {state: 'idle'}
     } else {
-        console.log('Application status')
-        console.log(array)
         if (array.approved === false) {
             return {state: 'applied'}
         } else if (array.approved === true) {
@@ -198,7 +136,16 @@ function ApplicationStatus({tripId, userId}) {
             },
         })
 
-        const status = await response.json()
+
+        const json = await response.json()
+
+
+        if (json.approved === true) {
+            setStatus({ state: 'confirmed' })
+        } else if (json.approved === false) {
+            setStatus({ state: 'idle' })
+        }
+
         setStatus(status)
     }
 
@@ -215,12 +162,6 @@ function ApplicationStatus({tripId, userId}) {
     if (status.state === 'applied') {
         return (
             <p>Your application has been submitted. Please wait for review</p>
-        )
-    }
-
-    if (status.state === 'rejected') {
-        return (
-            <p>You has been rejected for this trip</p>
         )
     }
 
