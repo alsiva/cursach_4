@@ -1,15 +1,18 @@
 package backend.yagodnoye.Entities;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.OnDelete;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name="berryperson")
-public class BerryPerson {
+public class BerryPerson implements UserDetails {
     @Id
     @SequenceGenerator(
             name = "berry_person_sequence",
@@ -25,7 +28,10 @@ public class BerryPerson {
     private String email;
     @Column(unique = true)
     private String username;
-    private int rightId;
+
+    @OneToOne(cascade = CascadeType.DETACH)
+    private Rights right;
+
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
@@ -47,8 +53,8 @@ public class BerryPerson {
     public BerryPerson(){
     }
 
-    public BerryPerson(int rightId, String email, String username, String password, String name, String surname, Sex sex, LocalDate dateOfBirth, String telegram, String vk){
-        this.rightId = rightId;
+    public BerryPerson(String email, String username, String password, String name, String surname, Sex sex, LocalDate dateOfBirth, String telegram, String vk){
+
         this.email = email;
         this.username = username;
         this.password = password;
@@ -60,23 +66,44 @@ public class BerryPerson {
         this.vk = vk;
     }
 
-    public int getRightId() {
-        return rightId;
+    public Long getRightId() {
+        return this.right.getId();
     }
     public String getEmail(){return email;}
-    @Column()
     public String getUsername() {return username;}
 
-    public void setRightId(int rightId) {
-        this.rightId = rightId;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void setRightId(Rights rights) {
+        this.right = rights;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("user"));
+    }
+
+    @Override
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getName() {
@@ -136,7 +163,7 @@ public class BerryPerson {
     public String toString() {
         return "BerryPerson{" +
                 "id=" + id +
-                ", rightId=" + rightId +
+                ", rightId=" + getRightId() +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
@@ -152,11 +179,11 @@ public class BerryPerson {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BerryPerson that = (BerryPerson) o;
-        return rightId == that.rightId && email.equals(that.email) && username.equals(that.username) && password.equals(that.password) && name.equals(that.name) && surname.equals(that.surname) && sex == that.sex && dateOfBirth.equals(that.dateOfBirth) && Objects.equals(telegram, that.telegram) && Objects.equals(vk, that.vk) && Objects.equals(organizingTrips, that.organizingTrips);
+        return Objects.equals(getRightId(), that.getRightId()) && email.equals(that.email) && username.equals(that.username) && password.equals(that.password) && name.equals(that.name) && surname.equals(that.surname) && sex == that.sex && dateOfBirth.equals(that.dateOfBirth) && Objects.equals(telegram, that.telegram) && Objects.equals(vk, that.vk) && Objects.equals(organizingTrips, that.organizingTrips);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, username, rightId, password, name, surname, sex, dateOfBirth, telegram, vk, organizingTrips);
+        return Objects.hash(email, username, getRightId(), password, name, surname, sex, dateOfBirth, telegram, vk, organizingTrips);
     }
 }
