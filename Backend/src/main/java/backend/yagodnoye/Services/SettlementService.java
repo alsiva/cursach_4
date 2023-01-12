@@ -36,18 +36,17 @@ public class SettlementService {
         return repository.findByTrip_IdEquals(tripID);
     }
 
-    public void settleBerryPerson(Long tripID, Long personID, Long houseID) throws HouseNotFoundException, PersonNotFoundException, HouseIsFullException, TripNotFoundException {
+    public Settlement settleBerryPerson(Long tripID, Long personID, Long houseID) throws HouseNotFoundException, PersonNotFoundException, HouseIsFullException, TripNotFoundException {
         Trip trip = tripService.findTripById(tripID);
         House house= houseService.getHouseByID(houseID);
         BerryPerson person = berryPersonService.findById(personID);
         if (!tripParticipantService.getTripParticipant(person,trip).isApproved()) throw new NotAcceptableStatusException("Not invited person!");
         List<Settlement> settlementList = repository.findByTrip_IdAndHouse_Id(tripID, houseID);
-        if(settlementList.isEmpty()) {
-            repository.save(new Settlement(trip, person, house));
-            return;
-        }
-        else if (settlementList.get(0).getHouse().getMaxPeople() <= settlementList.size()) throw new HouseIsFullException();
-        repository.save(new Settlement(trip, person, house));
+        Settlement settlement = new Settlement(trip, person, house);
+        if (settlementList.get(0).getHouse().getMaxPeople() <= settlementList.size()) throw new HouseIsFullException();
+        repository.save(settlement);
+        return settlement;
+
     }
 
     public void unSettlePerson(Long tripID, Long personID, Long houseID) throws TripNotFoundException, HouseNotFoundException, PersonNotFoundException {

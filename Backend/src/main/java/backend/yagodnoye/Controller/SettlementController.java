@@ -27,12 +27,12 @@ public class SettlementController {
     }
 
     @PutMapping("/settlement")
-    public void settleBerryPerson(
+    public Settlement settleBerryPerson(
             @RequestParam(name = "houseID") Long houseID,
             @RequestParam(name = "personID") Long personID,
             @PathVariable(name = "tripID") Long tripID
     ) throws HouseNotFoundException, PersonNotFoundException, HouseIsFullException, TripNotFoundException {
-        service.settleBerryPerson(tripID, personID, houseID);
+        return service.settleBerryPerson(tripID, personID, houseID);
     }
 
     @DeleteMapping("/settlement")
