@@ -10,6 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface BerryPersonRepository extends JpaRepository<BerryPerson, Long> {
+    Optional<BerryPerson> findByUsernameLikeIgnoreCaseOrEmailLikeIgnoreCase(@NonNull String username, @NonNull String email);
+    Optional<BerryPerson> findByEmailLike(@NonNull String email);
     Optional<BerryPerson> findByEmailLikeIgnoreCase(@NonNull String email);
     Optional<BerryPerson> findByEmailLikeIgnoreCaseAndPasswordLike(@NonNull String email, @NonNull String password);
     Optional<BerryPerson> findByUsernameLikeIgnoreCaseAndPasswordLike(@NonNull String username, @NonNull String password);

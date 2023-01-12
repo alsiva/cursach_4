@@ -1,5 +1,8 @@
 package backend.yagodnoye.Services;
 
+import backend.yagodnoye.Controller.AuthenticationResponse;
+import backend.yagodnoye.Controller.LoginRequest;
+import backend.yagodnoye.Controller.RegisterRequest;
 import backend.yagodnoye.Entities.BerryPerson;
 import backend.yagodnoye.Entities.Sex;
 import backend.yagodnoye.Exceptions.RegisterException;
@@ -10,10 +13,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class BerryPersonService {
     private final BerryPersonRepository repository;
+    String emailPattern = "^(.+)@(\\S+)$";
+
     @Autowired
     public BerryPersonService(BerryPersonRepository repository){
         this.repository = repository;
@@ -49,9 +55,32 @@ public class BerryPersonService {
         if (berryPersonOptional.isEmpty()) throw new PersonNotFoundException();
         return berryPersonOptional.get();
     }
+
+    public BerryPerson findByEmail (String email) throws PersonNotFoundException {
+        Optional<BerryPerson> berryPersonOptional = repository.findByEmailLike(email);
+        if (berryPersonOptional.isEmpty()) throw new PersonNotFoundException();
+        return berryPersonOptional.get();
+    }
+
+    public BerryPerson findByCredential(String credential) throws PersonNotFoundException {
+        if (Pattern.compile(emailPattern).matcher(credential).matches()) {
+            return findByEmail(credential);
+        }
+        return findByUsername(credential);
+    }
+
+
     public BerryPerson findById(Long id) throws PersonNotFoundException {
         Optional<BerryPerson> berryPersonOptional = repository.findByIdEquals(id);
         if (berryPersonOptional.isEmpty()) throw new PersonNotFoundException();
         return berryPersonOptional.get();
+    }
+
+    public AuthenticationResponse register(RegisterRequest request) {
+        return null;
+    }
+
+    public AuthenticationResponse login(LoginRequest request) {
+        return null;
     }
 }
