@@ -28,7 +28,10 @@ public class BerryPerson implements UserDetails {
     private String email;
     @Column(unique = true)
     private String username;
-    private int rightId;
+
+    @OneToOne(cascade = CascadeType.DETACH)
+    private Rights right;
+
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
@@ -50,8 +53,8 @@ public class BerryPerson implements UserDetails {
     public BerryPerson(){
     }
 
-    public BerryPerson(int rightId, String email, String username, String password, String name, String surname, Sex sex, LocalDate dateOfBirth, String telegram, String vk){
-        this.rightId = rightId;
+    public BerryPerson(String email, String username, String password, String name, String surname, Sex sex, LocalDate dateOfBirth, String telegram, String vk){
+
         this.email = email;
         this.username = username;
         this.password = password;
@@ -63,8 +66,8 @@ public class BerryPerson implements UserDetails {
         this.vk = vk;
     }
 
-    public int getRightId() {
-        return rightId;
+    public Long getRightId() {
+        return this.right.getId();
     }
     public String getEmail(){return email;}
     public String getUsername() {return username;}
@@ -89,8 +92,8 @@ public class BerryPerson implements UserDetails {
         return true;
     }
 
-    public void setRightId(int rightId) {
-        this.rightId = rightId;
+    public void setRightId(Rights rights) {
+        this.right = rights;
     }
 
     @Override
@@ -160,7 +163,7 @@ public class BerryPerson implements UserDetails {
     public String toString() {
         return "BerryPerson{" +
                 "id=" + id +
-                ", rightId=" + rightId +
+                ", rightId=" + getRightId() +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
@@ -176,11 +179,11 @@ public class BerryPerson implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BerryPerson that = (BerryPerson) o;
-        return rightId == that.rightId && email.equals(that.email) && username.equals(that.username) && password.equals(that.password) && name.equals(that.name) && surname.equals(that.surname) && sex == that.sex && dateOfBirth.equals(that.dateOfBirth) && Objects.equals(telegram, that.telegram) && Objects.equals(vk, that.vk) && Objects.equals(organizingTrips, that.organizingTrips);
+        return Objects.equals(getRightId(), that.getRightId()) && email.equals(that.email) && username.equals(that.username) && password.equals(that.password) && name.equals(that.name) && surname.equals(that.surname) && sex == that.sex && dateOfBirth.equals(that.dateOfBirth) && Objects.equals(telegram, that.telegram) && Objects.equals(vk, that.vk) && Objects.equals(organizingTrips, that.organizingTrips);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, username, rightId, password, name, surname, sex, dateOfBirth, telegram, vk, organizingTrips);
+        return Objects.hash(email, username, getRightId(), password, name, surname, sex, dateOfBirth, telegram, vk, organizingTrips);
     }
 }
