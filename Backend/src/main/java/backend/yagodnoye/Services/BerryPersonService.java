@@ -60,7 +60,7 @@ public class BerryPersonService {
     public AuthenticationResponse register(RegisterRequest request) {
         if (request.getTelegram().equals("")) request.setTelegram(null);
         if (request.getVk().equals("")) request.setTelegram(null);
-        BerryPerson berryPerson = new BerryPerson(1, request.getEmail(), request.getUsername(), encoder.encode(request.getPassword()),
+        BerryPerson berryPerson = new BerryPerson( request.getEmail(), request.getUsername(), encoder.encode(request.getPassword()),
         request.getName(), request.getSurname(), Sex.valueOf(request.getSex()), LocalDate.parse(request.getDateOfBirth()), request.getTelegram(), request.getVk());
         repository.save(berryPerson);
         var jwtToken = jwtService.generateToken(berryPerson);
