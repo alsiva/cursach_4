@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/trips/{tripID}")
 public class ScheduleController {
 
-    private ScheduleService service;
+    private final ScheduleService service;
 
     public ScheduleController(ScheduleService service){
         this.service = service;

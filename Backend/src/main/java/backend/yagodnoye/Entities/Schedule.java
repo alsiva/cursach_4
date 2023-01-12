@@ -11,7 +11,7 @@ import java.util.Objects;
 @IdClass(ScheduleID.class)
 public class Schedule {
     @Id
-    @ManyToOne(optional = false, cascade = CascadeType.REMOVE)
+    @ManyToOne(optional = false, cascade = CascadeType.DETACH)
     @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;
 
@@ -42,6 +42,30 @@ public class Schedule {
         this.trip = trip;
     }
 
+    public LocalDateTime getStart() {
+        return start;
+    }
+
+    public void setStart(LocalDateTime start) {
+        this.start = start;
+    }
+
+    public LocalDateTime getEnd() {
+        return end;
+    }
+
+    public void setEnd(LocalDateTime end) {
+        this.end = end;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -55,4 +79,13 @@ public class Schedule {
         return Objects.hash(trip, start, end);
     }
 
+    @Override
+    public String toString() {
+        return "Schedule{" +
+                "trip=" + trip +
+                ", start=" + start +
+                ", end=" + end +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
