@@ -7,7 +7,7 @@ import {DateTimePicker} from "@mui/x-date-pickers";
 async function getSchedule(tripId) {
     await delay(500)
 
-    const response = await fetch('/api/schedule?tripID=' + tripId, {
+    const response = await fetch(`/api/trips/${tripId}/schedule`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'

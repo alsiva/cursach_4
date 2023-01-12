@@ -14,5 +14,5 @@ import java.util.Optional;
 public interface ScheduleRepository extends JpaRepository<Schedule, ScheduleID> {
     @Query("select s from Schedule s where s.trip.id = ?1 and s.start = ?2 and s.end = ?3")
     Optional<Schedule> findByTrip_IdEqualsAndStartEqualsAndEndEquals(@NonNull Long id, @NonNull LocalDateTime start, @NonNull LocalDateTime end);
-    LinkedList<Schedule> findByTrip_IdEquals(@NonNull Long id);
+    List<Schedule> findByTrip_IdEquals(@NonNull Long id);
 }
