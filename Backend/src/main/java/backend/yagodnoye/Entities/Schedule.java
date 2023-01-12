@@ -11,7 +11,7 @@ import java.util.Objects;
 @IdClass(ScheduleID.class)
 public class Schedule {
     @Id
-    @ManyToOne(optional = false, cascade = CascadeType.REMOVE)
+    @ManyToOne(optional = false, cascade = CascadeType.DETACH)
     @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;
 
