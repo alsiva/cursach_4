@@ -50,8 +50,8 @@ export default function Login({onLogin}) {
         await delay(500)
         setIsLoading(false)
 
-        if (response.status === 400) {
-            setError(response.statusText)
+        if (response.status === 500) {
+            setError('Wrong credentials')
             return
         }
 
@@ -148,36 +148,34 @@ export default function Login({onLogin}) {
     }
 
     return (
-        <Box>
+        <Box sx={{height: '100vh'}}>
             <Box sx={{
-                height: 100,
+                height: '15vh',
                 bgcolor: '#7afc28',
-                paddingX: 5,
-                paddingTop: 5
+
             }}>
                 <Typography variant="h4" sx={{
                     color: '#ffffff',
+                    paddingX: 5,
+                    paddingTop: 5
                 }}> Login/Register </Typography>
             </Box>
 
-
             <Box sx={{
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 flexDirection: 'column',
-                marginY: 5,
-
-
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '85vh'
             }}>
                 <Box sx={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexDirection: 'column',
-                    height: 450,
+                    maxHeight: 700,
                     width: 400,
-                    paddingY: 2,
+                    paddingY: 1,
 
                     border: 1,
                     borderRadius: 5,
@@ -316,7 +314,9 @@ export default function Login({onLogin}) {
                     )}
                 </Box>
             </Box>
+            </Box>
 
-        </Box>
+
+
     );
 }
