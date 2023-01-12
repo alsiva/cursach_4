@@ -1,43 +1,30 @@
 package backend.yagodnoye.Services;
 
+import backend.yagodnoye.authentication.AuthenticationResponse;
+import backend.yagodnoye.authentication.LoginRequest;
+import backend.yagodnoye.authentication.RegisterRequest;
 import backend.yagodnoye.Entities.BerryPerson;
 import backend.yagodnoye.Entities.Sex;
-import backend.yagodnoye.Exceptions.RegisterException;
 import backend.yagodnoye.Exceptions.PersonNotFoundException;
 import backend.yagodnoye.Repository.BerryPersonRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
+@RequiredArgsConstructor
 public class BerryPersonService {
     private final BerryPersonRepository repository;
-    @Autowired
-    public BerryPersonService(BerryPersonRepository repository){
-        this.repository = repository;
-    }
-    public BerryPerson loginByUsername(String username, String password) throws PersonNotFoundException {
-        Optional<BerryPerson> berryPersonOptional = repository.findByUsernameLikeIgnoreCaseAndPasswordLike(username, password);
-        if (berryPersonOptional.isEmpty()) throw new PersonNotFoundException();
-        return berryPersonOptional.get();
-    }
-    public BerryPerson loginByEmail(String email, String password) throws PersonNotFoundException {
-        Optional<BerryPerson> berryPersonOptional = repository.findByEmailLikeIgnoreCaseAndPasswordLike(email, password);
-        if (berryPersonOptional.isEmpty()) throw new PersonNotFoundException();
-        return berryPersonOptional.get();
-    }
-
-    public BerryPerson register(int rightId, String email, String username, String password, String name, String surname, Sex sex, LocalDate dateOfBirth, String telegram, String vk) throws RegisterException {
-        Optional<BerryPerson> berryPersonOptional = repository.findByUsernameLikeIgnoreCase(username);
-        if(berryPersonOptional.isPresent()) throw new RegisterException("Username");
-        berryPersonOptional = repository.findByEmailLikeIgnoreCase(email);
-        if(berryPersonOptional.isPresent()) throw new RegisterException("Email ");
-        BerryPerson berryPerson = new BerryPerson(rightId, email, username, password, name, surname, sex, dateOfBirth, telegram, vk);
-        repository.save(berryPerson);
-        return berryPerson;
-    }
+    private final PasswordEncoder encoder;
+    private final JwtService jwtService;
+    private final AuthenticationManager manager;
+    String emailPattern = "^(.+)@(\\S+)$";
 
     public BerryPerson findByName(String name) throws PersonNotFoundException {
         Optional<BerryPerson> berryPersonOptional = repository.findFirstByNameIgnoreCaseOrderBySurnameAsc(name);
@@ -49,9 +36,61 @@ public class BerryPersonService {
         if (berryPersonOptional.isEmpty()) throw new PersonNotFoundException();
         return berryPersonOptional.get();
     }
+
+    public BerryPerson findByEmail (String email) throws PersonNotFoundException {
+        Optional<BerryPerson> berryPersonOptional = repository.findByEmailLikeAllIgnoreCase(email);
+        if (berryPersonOptional.isEmpty()) throw new PersonNotFoundException();
+        return berryPersonOptional.get();
+    }
+
+    public BerryPerson findByCredential(String credential) throws PersonNotFoundException {
+        if (Pattern.compile(emailPattern).matcher(credential).matches()) {
+            return findByEmail(credential);
+        }
+        return findByUsername(credential);
+    }
+
+
     public BerryPerson findById(Long id) throws PersonNotFoundException {
         Optional<BerryPerson> berryPersonOptional = repository.findByIdEquals(id);
         if (berryPersonOptional.isEmpty()) throw new PersonNotFoundException();
         return berryPersonOptional.get();
+    }
+
+    public AuthenticationResponse register(RegisterRequest request) {
+        if (request.getTelegram().equals("")) request.setTelegram(null);
+        if (request.getVk().equals("")) request.setTelegram(null);
+        BerryPerson berryPerson = new BerryPerson( request.getEmail(), request.getUsername(), encoder.encode(request.getPassword()),
+        request.getName(), request.getSurname(), Sex.valueOf(request.getSex()), LocalDate.parse(request.getDateOfBirth()), request.getTelegram(), request.getVk());
+        repository.save(berryPerson);
+        var jwtToken = jwtService.generateToken(berryPerson);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
+    public boolean isEmail(String credential){
+        return Pattern.compile(emailPattern).matcher(credential).matches();
+    }
+
+    public AuthenticationResponse login(LoginRequest request) {
+        manager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    request.getCredential(),
+                    request.getPassword()
+                )
+        );
+        BerryPerson user;
+        if (isEmail(request.getCredential())){
+            user = repository.findByEmailLikeAllIgnoreCase(request.getCredential()).orElseThrow();
+
+        }
+        else{
+            user = repository.findByUsernameLikeIgnoreCase(request.getCredential()).orElseThrow();
+        }
+        var jwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 }

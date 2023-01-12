@@ -1,5 +1,6 @@
 package backend.yagodnoye.Controller;
 
+import backend.yagodnoye.Entities.BerryPerson;
 import backend.yagodnoye.Entities.Trip;
 import backend.yagodnoye.Entities.TripParticipant;
 import backend.yagodnoye.Exceptions.AlreadyExistsException;
@@ -8,6 +9,7 @@ import backend.yagodnoye.Exceptions.TripNotFoundException;
 import backend.yagodnoye.Services.BerryPersonService;
 import backend.yagodnoye.Services.TripParticipantService;
 import backend.yagodnoye.Services.TripService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,11 +31,11 @@ public class TripParticipantController {
 
     @PutMapping("/application") //personID, letter
     public TripParticipant addTripParticipant(
-            @RequestParam(name = "personID") Long berryPersonId,
             @PathVariable("tripID") Long tripId,
             @RequestParam(name = "letter") String letter
     ) throws PersonNotFoundException, AlreadyExistsException, TripNotFoundException {
-        return service.addTripParticipant(berryPersonService.findById(berryPersonId), tripService.findTripById(tripId), letter);
+        BerryPerson berryPerson = berryPersonService.findByCredential(SecurityContextHolder.getContext().getAuthentication().getName()) ;
+        return service.addTripParticipant(berryPerson, tripService.findTripById(tripId), letter);
     }
 
     @GetMapping("/application") //personID
