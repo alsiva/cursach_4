@@ -23,7 +23,7 @@ public class ScheduleService {
     }
     public LinkedList<Schedule> getSchedule(Long tripID) throws TripNotFoundException {
         if (!tripService.tripExists(tripID)) throw new TripNotFoundException();
-        return (LinkedList<Schedule>) repository.findByTrip_IdEquals(tripID);
+        return repository.findByTrip_IdEquals(tripID);
     }
 
     public void deleteSchedule(Long tripID, LocalDateTime startTime, LocalDateTime endTime) throws TripNotFoundException, ScheduleNotFoundException {
