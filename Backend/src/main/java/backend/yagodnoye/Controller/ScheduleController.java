@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/trips/{tripID}")
@@ -22,7 +23,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/schedule")
-    public LinkedList<Schedule> getSchedule(
+    public List<Schedule> getSchedule(
             @PathVariable(name = "tripID") Long tripID
     ) throws TripNotFoundException {
         return service.getSchedule(tripID);
