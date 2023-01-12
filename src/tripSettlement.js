@@ -26,7 +26,6 @@ async function getHouses() {
         },
     })
 
-
     return await response.json()
 }
 
@@ -51,14 +50,15 @@ function SettlementManagement({tripId, userInfo}) {
         getTripSettlement(tripId).then(settlement => setSettlements(settlement))
     }, [tripId])
 
+
     if (houses == null || participants == null || settlements == null) {
         return <CircularProgress/>
     }
 
-    const notSettled = participants.filter(candidate => !settlements.some(settlement => settlement.userId === candidate.id))
+    const notSettled = participants.filter(candidate => !settlements.some(settlement => settlement.berryPerson.id === candidate.id))
 
     const info = houses.map(house => {
-        const settledInThisHouse = settlements.filter(settlement => settlement.houseId === house.id)
+        const settledInThisHouse = settlements.filter(settlement => settlement.house.id === house.id)
 
         return {
             house: house,
@@ -66,7 +66,8 @@ function SettlementManagement({tripId, userInfo}) {
         }
     })
 
-    const housesWithCapacity = info.filter(it => it.settled.length < it.house.capacity).map(it => it.house)
+
+    const housesWithCapacity = info.filter(it => it.settled.length < it.house.maxPeople).map(it => it.house)
 
     return (
         <div>
@@ -86,13 +87,15 @@ function SettlementManagement({tripId, userInfo}) {
                             <Stack direction={"row"} spacing={1}>
                                 {settled.map(settlement => (
                                     <Chip
-                                        key={settlement.id}
-                                        label={settlement.user.name}
+                                        key={settlement.berryPerson.id}
+                                        label={settlement.berryPerson.name}
                                         variant="outlined"
                                         onClick={() => {
                                             if (userInfo.right === 'organizer') {
-                                                removeSettler(settlement.id).then(() => {
-                                                        setSettlements(prev => prev.filter(toDelete => toDelete.id !== settlement.id))
+                                                removeSettler(settlement.trip.id, settlement.house.id, settlement.berryPerson.id).then(() => {
+                                                        console.log('TO DELETE !!!!!!!!!!!!!!')
+                                                        console.log(settlements)
+                                                        setSettlements(prev => prev.filter(toDelete => toDelete.berryPerson.id !== settlement.berryPerson.id))
                                                     }
                                                 )
                                             }
@@ -123,15 +126,10 @@ function SettlementManagement({tripId, userInfo}) {
                                                 onChange={e => {
                                                     const houseId = Number(e.target.value)
                                                     addSettler(participant.id, tripId, houseId).then(settlement => {
+                                                        console.log("Settlement")
+                                                        console.log(settlement)
                                                         setSettlements(prev => {
-                                                            const newSettlement = {
-                                                                id: settlement.id,
-                                                                tripId: settlement.tripId,
-                                                                houseId: settlement.houseId,
-                                                                userId: settlement.userId,
-                                                                user: participant,
-                                                            }
-                                                            return [...prev, newSettlement]
+                                                            return [...prev, settlement]
                                                         })
                                                     })
                                                 }}
@@ -154,36 +152,28 @@ function SettlementManagement({tripId, userInfo}) {
     )
 }
 
-async function removeSettler(settlementId) {
+async function removeSettler(tripId, houseId, berryPersonId) {
     await delay(500)
 
-    const response = await fetch('/api/settlements/' + settlementId, {
+    await fetch(`/api/trips/${tripId}/settlement?houseID=${houseId}&personID=${berryPersonId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
         }
     })
-
-    const json = await response.json()
-
-    console.log(json)
-    return json
 }
 
 async function addSettler(userId, tripId, houseId) {
     await delay(500)
 
-    const response = await fetch('/api/settlements', {
-        method: 'POST',
+    const response = await fetch(`/api/trips/${tripId}/settlement?houseID=${houseId}&personID=${userId}`, {
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            userId: userId,
-            tripId: tripId,
-            houseId: houseId
-        }),
+        }
+
     })
+
 
     return await response.json()
 }
@@ -191,26 +181,37 @@ async function addSettler(userId, tripId, houseId) {
 async function getTripSettlement(tripId) {
     await delay(500)
 
-    const response = await fetch('/api/settlements?_expand=user&tripId=' + tripId, {
+    const response = await fetch(`/api/trips/${tripId}/settlement`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
     })
 
-    return await response.json()
+    const json = await response.json()
+
+    console.log('JSON')
+    console.log(json)
+    if (json.length === 0) return []
+
+
+    return json
 }
 
 async function getTripParticipants(tripId) {
     await delay(500)
 
-    const response = await fetch('/api/applications?_expand=user&state=confirmed&tripId=' + tripId, {
+    const response = await fetch(`/api/trips/${tripId}/users`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
     })
 
-    return (await response.json()).map(application => application.user)
+    if (response.status === 404) {
+        return []
+    }
+
+    return (await response.json()).map(application => application.berryPerson)
 }
 
