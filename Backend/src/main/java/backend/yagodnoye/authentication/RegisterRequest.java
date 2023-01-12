@@ -1,4 +1,4 @@
-package backend.yagodnoye.Controller;
+package backend.yagodnoye.authentication;
 
 import backend.yagodnoye.Entities.Sex;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package backend.yagodnoye.Controller;
+package backend.yagodnoye.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
