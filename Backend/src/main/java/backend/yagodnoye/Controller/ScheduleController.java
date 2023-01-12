@@ -30,9 +30,11 @@ public class ScheduleController {
     @DeleteMapping("/schedule")
     public void deleteSchedule(
             @PathVariable(name = "tripID") Long tripID,
-            @RequestParam(name="startTime") LocalDateTime startTime,
-            @RequestParam(name="endTime") LocalDateTime endTime
+            @RequestParam(name="startTime") String startTimeStr,
+            @RequestParam(name="endTime") String endTimeStr
             ) throws ScheduleNotFoundException, TripNotFoundException {
+        LocalDateTime startTime = LocalDateTime.parse(startTimeStr);
+        LocalDateTime endTime = LocalDateTime.parse(endTimeStr);
         service.deleteSchedule(tripID, startTime, endTime);
     }
 

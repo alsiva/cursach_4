@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "schedule")
+@Table(name = "tripschedule")
 @IdClass(ScheduleID.class)
 public class Schedule {
     @Id
@@ -16,8 +16,10 @@ public class Schedule {
     private Trip trip;
 
     @Id
+    @Column(name = "startTime")
     private LocalDateTime start;
     @Id
+    @Column(name = "endTime")
     private LocalDateTime end;
 
     private String description;
