@@ -3,7 +3,7 @@ import {Button, CircularProgress} from "@mui/material";
 import {delay} from "./utils";
 
 
-//todo Не отображать людей которые подали заявку
+
 
 export default function TripApplication({trip, userInfo, back}) {
     return (

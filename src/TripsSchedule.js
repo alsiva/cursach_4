@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 import {DateTimePicker} from "@mui/x-date-pickers";
 
 
-
 export default function TripSchedule({trip, userInfo, back}) {
     const [schedules, setSchedules] = useState(null)
 
@@ -21,8 +20,7 @@ export default function TripSchedule({trip, userInfo, back}) {
             },
         })
 
-        console.log('Response')
-        console.log(response)
+
 
         if (response.status === 404) {
             return []
@@ -90,9 +88,6 @@ export default function TripSchedule({trip, userInfo, back}) {
                 'Content-Type': 'application/json'
             }
         })
-        console.log('Debug data')
-        console.log(schedules[0])
-        console.log(startTime)
 
 
         setSchedules(prev => prev.filter(schedule => schedule.start !== startTime))

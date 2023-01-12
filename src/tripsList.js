@@ -109,12 +109,14 @@ async function getFilteredTrips(filterDate) {
     })
 
     let json = await response.json();
+
     return json.filter(trip => {
         if (filterDate == null) {
             return true
         }
 
-        return filterDate.startOf('month') <= dayjs(trip.startDate) && dayjs(trip.startDate) <= filterDate.endOf('month')
+
+        return filterDate.startOf('month') <= dayjs(trip.startDate) && dayjs(trip.endDate) <= filterDate.endOf('month')
     })
 }
 

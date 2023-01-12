@@ -19,7 +19,7 @@ export default function CreateTrip({userInfo ,back}) {
     const API_FORMAT = 'YYYY/MM/DD';
     const BACK_FORMAT = "YYYY-MM-DD"
 
-    //todo Обработай различные статусы
+
     async function addTrip(title, description, startDate, endDate) {
         startDate = dayjs(startDate).format(BACK_FORMAT)
         endDate = dayjs(endDate).format(BACK_FORMAT)

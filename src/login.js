@@ -67,7 +67,7 @@ export default function Login({onLogin}) {
             rightValue = 'organizer'
         }
 
-        //todo Обработай различные статусы, например когда человек заходит, а респонс при этом был не 200ok
+
         const userInfo = {
             id: json.id,
             name: json.name,
