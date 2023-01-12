@@ -26,8 +26,9 @@ public class BerryPersonController {
     @PostMapping("/login")
     @ResponseBody
     public BerryPerson login(@RequestParam(name="credential") String credential, @RequestParam(name="password") String password) throws PersonNotFoundException {
-        if (Pattern.compile(emailPattern).matcher(credential).matches())
+        if (Pattern.compile(emailPattern).matcher(credential).matches()) {
             return service.loginByEmail(credential, password);
+        }
         return service.loginByUsername(credential, password);
     }
 
