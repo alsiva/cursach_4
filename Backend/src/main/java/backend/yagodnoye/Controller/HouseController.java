@@ -1,24 +1,19 @@
 package backend.yagodnoye.Controller;
 
-import backend.yagodnoye.Entities.House;
 import backend.yagodnoye.Entities.HouseCreateDto;
 import backend.yagodnoye.Exceptions.AlreadyExistsException;
 import backend.yagodnoye.Services.HouseService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/")
+@RequiredArgsConstructor
 public class HouseController {
 
-    private HouseService houseService;
-
-    public HouseController(HouseService service){
-        houseService = service;
-    }
+    private final HouseService houseService;
 
     @GetMapping("/houses")
     public ResponseEntity<?> getHouses(){

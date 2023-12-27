@@ -5,6 +5,7 @@ import backend.yagodnoye.Entities.Trip;
 import backend.yagodnoye.Exceptions.TripNotFoundException;
 import backend.yagodnoye.Exceptions.WrongParametersException;
 import backend.yagodnoye.Repository.TripRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,13 +13,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class TripService {
 
-    private TripRepository tripRepository;
+    private final TripRepository tripRepository;
 
-    public TripService(TripRepository tripRepository){
-        this.tripRepository = tripRepository;
-    }
 
     public List<Trip> findAll(){
         return tripRepository.findAll();
@@ -35,8 +34,8 @@ public class TripService {
         return trip;
     }
 
-    public int deleteTrip(Long id){
-        return tripRepository.deleteByIdEquals(id);
+    public void deleteTrip(Long id){
+        tripRepository.deleteByIdEquals(id);
     }
 
     public Trip findTripById(Long id) throws TripNotFoundException {

@@ -1,29 +1,22 @@
 package backend.yagodnoye.Controller;
 
-import backend.yagodnoye.Entities.Trip;
 import backend.yagodnoye.Exceptions.PersonNotFoundException;
 import backend.yagodnoye.Exceptions.WrongParametersException;
 import backend.yagodnoye.Services.BerryPersonService;
 import backend.yagodnoye.Services.TripService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/")
+@RequiredArgsConstructor
 public class TripController {
 
     private final TripService service;
     private final BerryPersonService berryPersonService;
-
-    @Autowired
-    public TripController(TripService service, BerryPersonService berryPersonRepository) {
-        this.service = service;
-        this.berryPersonService = berryPersonRepository;
-    }
 
     @GetMapping("/trips")
     public ResponseEntity<?> getTrips(){

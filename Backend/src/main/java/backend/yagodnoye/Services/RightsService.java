@@ -4,7 +4,7 @@ import backend.yagodnoye.Entities.Rights;
 import backend.yagodnoye.Entities.RightsEnum;
 import backend.yagodnoye.Repository.RightsRepository;
 
-import org.springframework.context.annotation.Configuration;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,14 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RightsService {
 
 
     private final RightsRepository repository;
-
-    public RightsService(RightsRepository repository){
-        this.repository = repository;
-    }
 
     public List<Rights> checkIfExists(){
         List<Rights> list = new ArrayList<>();

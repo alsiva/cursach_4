@@ -4,18 +4,17 @@ import backend.yagodnoye.Entities.House;
 import backend.yagodnoye.Exceptions.AlreadyExistsException;
 import backend.yagodnoye.Exceptions.HouseNotFoundException;
 import backend.yagodnoye.Repository.HouseRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class HouseService {
-    private HouseRepository repository;
+    private final HouseRepository repository;
 
-    public HouseService(HouseRepository repository){
-        this.repository = repository;
-    }
 
     public House getHouseByID(Long id) throws HouseNotFoundException {
         Optional<House> houseOptional = repository.findByIdEquals(id);

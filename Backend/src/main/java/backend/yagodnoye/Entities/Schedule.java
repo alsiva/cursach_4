@@ -2,6 +2,10 @@ package backend.yagodnoye.Entities;
 
 import backend.yagodnoye.IdClasses.ScheduleID;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -9,6 +13,10 @@ import java.util.Objects;
 @Entity
 @Table(name = "tripschedule")
 @IdClass(ScheduleID.class)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Schedule {
     @Id
     @ManyToOne(optional = false, cascade = CascadeType.DETACH)
@@ -23,48 +31,6 @@ public class Schedule {
     private LocalDateTime end;
 
     private String description;
-
-    public Schedule() {
-    }
-
-    public Schedule(Trip trip, LocalDateTime start, LocalDateTime end, String description) {
-        this.trip = trip;
-        this.start = start;
-        this.end = end;
-        this.description = description;
-    }
-
-    public Trip getTrip() {
-        return trip;
-    }
-
-    public void setTrip(Trip trip) {
-        this.trip = trip;
-    }
-
-    public LocalDateTime getStart() {
-        return start;
-    }
-
-    public void setStart(LocalDateTime start) {
-        this.start = start;
-    }
-
-    public LocalDateTime getEnd() {
-        return end;
-    }
-
-    public void setEnd(LocalDateTime end) {
-        this.end = end;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     @Override
     public boolean equals(Object o) {

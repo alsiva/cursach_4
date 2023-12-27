@@ -1,17 +1,23 @@
 package backend.yagodnoye.Entities;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name="berryperson")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BerryPerson implements UserDetails {
     @Id
     @SequenceGenerator(
@@ -44,19 +50,17 @@ public class BerryPerson implements UserDetails {
     private LocalDate dateOfBirth;
     @Column(unique = true)
     private String telegram;
+    @Setter
     @Column(unique = true)
     private String vk;
 
     @OneToMany(mappedBy = "mainOrganizer", cascade = CascadeType.DETACH)
     private Collection<Trip> organizingTrips;
 
-    public BerryPerson(){
-    }
-
-    public BerryPerson(String email, String username, String password, String name, String surname, Sex sex, LocalDate dateOfBirth, String telegram, String vk){
-
+    public BerryPerson(String email, String username,  String password, String name, String surname, Sex sex, LocalDate dateOfBirth, String telegram, String vk) {
         this.email = email;
         this.username = username;
+        this.right = new Rights("normal");
         this.password = password;
         this.name = name;
         this.surname = surname;
@@ -64,13 +68,8 @@ public class BerryPerson implements UserDetails {
         this.dateOfBirth = dateOfBirth;
         this.telegram = telegram;
         this.vk = vk;
+        this.organizingTrips = new HashSet<>();
     }
-
-    public Long getRightId() {
-        return this.right.getId();
-    }
-    public String getEmail(){return email;}
-    public String getUsername() {return username;}
 
     @Override
     public boolean isAccountNonExpired() {
@@ -92,70 +91,10 @@ public class BerryPerson implements UserDetails {
         return true;
     }
 
-    public void setRightId(Rights rights) {
-        this.right = rights;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("user"));
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public Sex getSex() {
-        return sex;
-    }
-
-    public void setSex(Sex sex) {
-        this.sex = sex;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getTelegram() {
-        return telegram;
-    }
-
-    public void setTelegram(String telegram) {
-        this.telegram = telegram;
-    }
-
-    public String getVk() {
-        return vk;
-    }
-
-    public void setVk(String vk) {
-        this.vk = vk;
-    }
-
-    public Long getId() {
-        return id;
     }
 
 
@@ -163,7 +102,7 @@ public class BerryPerson implements UserDetails {
     public String toString() {
         return "BerryPerson{" +
                 "id=" + id +
-                ", rightId=" + getRightId() +
+                ", rightId=" + getRight().getId() +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
@@ -179,11 +118,11 @@ public class BerryPerson implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BerryPerson that = (BerryPerson) o;
-        return Objects.equals(getRightId(), that.getRightId()) && email.equals(that.email) && username.equals(that.username) && password.equals(that.password) && name.equals(that.name) && surname.equals(that.surname) && sex == that.sex && dateOfBirth.equals(that.dateOfBirth) && Objects.equals(telegram, that.telegram) && Objects.equals(vk, that.vk) && Objects.equals(organizingTrips, that.organizingTrips);
+        return Objects.equals(getRight().getId(), that.getRight().getId()) && email.equals(that.email) && username.equals(that.username) && password.equals(that.password) && name.equals(that.name) && surname.equals(that.surname) && sex == that.sex && dateOfBirth.equals(that.dateOfBirth) && Objects.equals(telegram, that.telegram) && Objects.equals(vk, that.vk) && Objects.equals(organizingTrips, that.organizingTrips);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, username, getRightId(), password, name, surname, sex, dateOfBirth, telegram, vk, organizingTrips);
+        return Objects.hash(email, username, getRight().getId(), password, name, surname, sex, dateOfBirth, telegram, vk, organizingTrips);
     }
 }

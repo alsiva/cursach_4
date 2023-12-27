@@ -1,27 +1,21 @@
 package backend.yagodnoye.Controller;
 
-import backend.yagodnoye.Entities.Schedule;
 import backend.yagodnoye.Exceptions.AlreadyExistsException;
 import backend.yagodnoye.Exceptions.ScheduleNotFoundException;
 import backend.yagodnoye.Exceptions.TripNotFoundException;
 import backend.yagodnoye.Services.ScheduleService;
-import org.springframework.cglib.core.Local;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/trips/{tripID}")
+@RequiredArgsConstructor
 public class ScheduleController {
 
     private final ScheduleService service;
-
-    public ScheduleController(ScheduleService service){
-        this.service = service;
-    }
 
     @GetMapping("/schedule")
     public ResponseEntity<?> getSchedule(

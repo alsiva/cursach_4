@@ -5,23 +5,20 @@ import backend.yagodnoye.Exceptions.AlreadyExistsException;
 import backend.yagodnoye.Exceptions.ScheduleNotFoundException;
 import backend.yagodnoye.Exceptions.TripNotFoundException;
 import backend.yagodnoye.Repository.ScheduleRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ScheduleService {
 
-    private ScheduleRepository repository;
-    private TripService tripService;
+    private final ScheduleRepository repository;
+    private final TripService tripService;
 
-    public ScheduleService(ScheduleRepository repository, TripService tripService){
-        this.repository = repository;
-        this.tripService = tripService;
-    }
     public List<Schedule> getSchedule(Long tripID) throws TripNotFoundException {
         if (!tripService.tripExists(tripID)) throw new TripNotFoundException("Trip with id = " + tripID + " was not found");
         return repository.findByTrip_IdEquals(tripID);

@@ -1,33 +1,27 @@
 package backend.yagodnoye.Controller;
 
 import backend.yagodnoye.Entities.BerryPerson;
-import backend.yagodnoye.Entities.Trip;
-import backend.yagodnoye.Entities.TripParticipant;
 import backend.yagodnoye.Exceptions.AlreadyExistsException;
 import backend.yagodnoye.Exceptions.PersonNotFoundException;
 import backend.yagodnoye.Exceptions.TripNotFoundException;
 import backend.yagodnoye.Services.BerryPersonService;
 import backend.yagodnoye.Services.TripParticipantService;
 import backend.yagodnoye.Services.TripService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/trips/{tripID}")
+@RequiredArgsConstructor
 public class TripParticipantController {
 
     private final TripParticipantService service;
     private final BerryPersonService berryPersonService;
     private final TripService tripService;
 
-    public TripParticipantController(TripParticipantService service, BerryPersonService berryPersonService, TripService tripService) {
-        this.service = service;
-        this.berryPersonService = berryPersonService;
-        this.tripService = tripService;
-    }
 
     @PutMapping("/application") //personID, letter
     public ResponseEntity<?> addTripParticipant(

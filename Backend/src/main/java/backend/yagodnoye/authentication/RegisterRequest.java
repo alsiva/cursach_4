@@ -1,6 +1,5 @@
 package backend.yagodnoye.authentication;
 
-import backend.yagodnoye.Entities.Sex;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

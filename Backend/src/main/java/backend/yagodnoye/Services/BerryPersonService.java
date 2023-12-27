@@ -59,12 +59,21 @@ public class BerryPersonService {
     }
 
     public AuthenticationResponse register(RegisterRequest request) throws RegisterException {
-        if (request.getTelegram().equals("")) request.setTelegram(null);
-        if (request.getVk().equals("")) request.setTelegram(null);
+        if (request.getTelegram().isEmpty()) request.setTelegram(null);
+        if (request.getVk().isEmpty()) request.setTelegram(null);
         if (repository.existsByEmailEqualsIgnoreCase(request.getEmail())) throw new RegisterException("Person with email " + request.getEmail() + " is already exists");
         if (repository.existsByUsernameEqualsIgnoreCase(request.getUsername())) throw new RegisterException("Person with username " + request.getUsername() + " already exists");
-        BerryPerson berryPerson = new BerryPerson( request.getEmail(), request.getUsername(), encoder.encode(request.getPassword()),
-        request.getName(), request.getSurname(), Sex.valueOf(request.getSex()), LocalDate.parse(request.getDateOfBirth()), request.getTelegram(), request.getVk());
+        BerryPerson berryPerson = new BerryPerson(
+                request.getEmail(),
+                request.getUsername(),
+                encoder.encode(request.getPassword()),
+                request.getName(),
+                request.getSurname(),
+                Sex.valueOf(request.getSex()),
+                LocalDate.parse(request.getDateOfBirth()),
+                request.getTelegram(),
+                request.getVk()
+        );
         repository.save(berryPerson);
         var jwtToken = jwtService.generateToken(berryPerson);
         return AuthenticationResponse.builder()

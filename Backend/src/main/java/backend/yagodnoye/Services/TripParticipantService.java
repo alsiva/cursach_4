@@ -6,20 +6,17 @@ import backend.yagodnoye.Entities.TripParticipant;
 import backend.yagodnoye.Exceptions.AlreadyExistsException;
 import backend.yagodnoye.Exceptions.PersonNotFoundException;
 import backend.yagodnoye.Repository.TripParticipantRepository;
-import backend.yagodnoye.Repository.TripRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class TripParticipantService {
     private final TripParticipantRepository repository;
 
-    public TripParticipantService(TripParticipantRepository repository){
-        this.repository = repository;
-    }
 
     public TripParticipant addTripParticipant(BerryPerson berryPerson, Trip trip, String letter) throws AlreadyExistsException {
         Optional<TripParticipant> tripParticipantOptional = repository.findByBerryPerson_IdEqualsAndTrip_IdEquals(berryPerson.getId(),trip.getId());

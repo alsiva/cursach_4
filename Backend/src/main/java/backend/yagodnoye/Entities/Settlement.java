@@ -3,10 +3,18 @@ package backend.yagodnoye.Entities;
 
 import backend.yagodnoye.IdClasses.SettlementID;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name="settlement")
 @IdClass(SettlementID.class)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Settlement {
     @Id
     @ManyToOne(optional = false, cascade = CascadeType.DETACH)
@@ -23,36 +31,4 @@ public class Settlement {
     @JoinColumn(name = "house_id", nullable = false)
     private House house;
 
-    public Settlement() {
-    }
-
-    public Settlement(Trip trip, BerryPerson berryPerson, House house) {
-        this.trip = trip;
-        this.berryPerson = berryPerson;
-        this.house = house;
-    }
-
-    public House getHouse() {
-        return house;
-    }
-
-    public void setHouse(House house) {
-        this.house = house;
-    }
-
-    public BerryPerson getBerryPerson() {
-        return berryPerson;
-    }
-
-    public void setBerryPerson(BerryPerson berryPerson) {
-        this.berryPerson = berryPerson;
-    }
-
-    public Trip getTrip() {
-        return trip;
-    }
-
-    public void setTrip(Trip trip) {
-        this.trip = trip;
-    }
 }

@@ -1,7 +1,6 @@
 package backend.yagodnoye.Exceptions.handlers;
 
 import backend.yagodnoye.Entities.ErrorBody;
-import backend.yagodnoye.Entities.House;
 import backend.yagodnoye.Exceptions.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

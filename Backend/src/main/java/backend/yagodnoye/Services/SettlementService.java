@@ -9,28 +9,21 @@ import backend.yagodnoye.Exceptions.HouseNotFoundException;
 import backend.yagodnoye.Exceptions.PersonNotFoundException;
 import backend.yagodnoye.Exceptions.TripNotFoundException;
 import backend.yagodnoye.Repository.SettlementRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.NotAcceptableStatusException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class SettlementService {
-    private SettlementRepository repository;
-    private TripService tripService;
-    private BerryPersonService berryPersonService;
-    private HouseService houseService;
-    private TripParticipantService tripParticipantService;
-
-    public SettlementService(SettlementRepository repository, TripService tripService, BerryPersonService berryPersonService, HouseService houseService, TripParticipantService tripParticipantService){
-        this.repository = repository;
-        this.tripService = tripService;
-        this.berryPersonService = berryPersonService;
-        this.houseService = houseService;
-        this.tripParticipantService = tripParticipantService;
-    }
+    private final SettlementRepository repository;
+    private final TripService tripService;
+    private final BerryPersonService berryPersonService;
+    private final HouseService houseService;
+    private final TripParticipantService tripParticipantService;
 
     public List<Settlement> getSettlement(Long tripID){
         return repository.findByTrip_IdEquals(tripID);

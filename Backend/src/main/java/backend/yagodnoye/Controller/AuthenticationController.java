@@ -5,7 +5,7 @@ import backend.yagodnoye.Services.BerryPersonService;
 import backend.yagodnoye.authentication.AuthenticationResponse;
 import backend.yagodnoye.authentication.LoginRequest;
 import backend.yagodnoye.authentication.RegisterRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,14 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
     private final BerryPersonService service;
-
-    @Autowired
-    public AuthenticationController(BerryPersonService service){
-        this.service = service;
-    }
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(

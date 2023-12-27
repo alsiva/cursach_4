@@ -1,25 +1,21 @@
 package backend.yagodnoye.Controller;
 
-import backend.yagodnoye.Entities.Settlement;
 import backend.yagodnoye.Exceptions.HouseIsFullException;
 import backend.yagodnoye.Exceptions.HouseNotFoundException;
 import backend.yagodnoye.Exceptions.PersonNotFoundException;
 import backend.yagodnoye.Exceptions.TripNotFoundException;
 import backend.yagodnoye.Services.SettlementService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/trips/{tripID}")
+@RequiredArgsConstructor
 public class SettlementController {
 
     private final SettlementService service;
-    public SettlementController(SettlementService service){
-        this.service = service;
-    }
     @GetMapping("/settlement")
     public ResponseEntity<?> getSettlement(
             @PathVariable(name = "tripID") String tripID
