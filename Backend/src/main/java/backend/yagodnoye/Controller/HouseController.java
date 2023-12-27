@@ -2,6 +2,7 @@ package backend.yagodnoye.Controller;
 
 import backend.yagodnoye.Entities.HouseCreateDto;
 import backend.yagodnoye.Exceptions.AlreadyExistsException;
+import backend.yagodnoye.Exceptions.WrongParametersException;
 import backend.yagodnoye.Services.HouseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class HouseController {
     }
 
     @PostMapping("/houses")
-    public ResponseEntity<?> createHouse(@RequestBody HouseCreateDto houseCreateDto) throws AlreadyExistsException {
+    public ResponseEntity<?> createHouse(@RequestBody HouseCreateDto houseCreateDto) throws AlreadyExistsException, WrongParametersException {
         return ResponseEntity.ok(houseService.createHouse(houseCreateDto.getName(), houseCreateDto.getMaxPeople()));
     }
 }

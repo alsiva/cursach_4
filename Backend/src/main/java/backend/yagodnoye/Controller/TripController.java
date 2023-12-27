@@ -37,7 +37,7 @@ public class TripController {
     }
 
     @DeleteMapping("/trips")
-    public ResponseEntity<?> deleteTrip(@RequestParam(name = "id") String id){
+    public ResponseEntity<?> deleteTrip(@RequestParam(name = "id") String id) throws WrongParametersException {
         service.deleteTrip(Long.parseLong(id));
         return ResponseEntity.ok().build();
     }

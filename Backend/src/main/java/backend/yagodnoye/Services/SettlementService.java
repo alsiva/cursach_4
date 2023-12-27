@@ -4,11 +4,9 @@ import backend.yagodnoye.Entities.BerryPerson;
 import backend.yagodnoye.Entities.House;
 import backend.yagodnoye.Entities.Settlement;
 import backend.yagodnoye.Entities.Trip;
-import backend.yagodnoye.Exceptions.HouseIsFullException;
-import backend.yagodnoye.Exceptions.HouseNotFoundException;
-import backend.yagodnoye.Exceptions.PersonNotFoundException;
-import backend.yagodnoye.Exceptions.TripNotFoundException;
+import backend.yagodnoye.Exceptions.*;
 import backend.yagodnoye.Repository.SettlementRepository;
+import backend.yagodnoye.Services.validators.GenericValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.NotAcceptableStatusException;
@@ -24,12 +22,18 @@ public class SettlementService {
     private final BerryPersonService berryPersonService;
     private final HouseService houseService;
     private final TripParticipantService tripParticipantService;
+    private final GenericValidator validator;
 
-    public List<Settlement> getSettlement(Long tripID){
+    public List<Settlement> getSettlement(Long tripID) throws WrongParametersException, TripNotFoundException {
+        validator.validateId(tripID);
+        if (!tripService.tripExists(tripID)) throw new TripNotFoundException("Trip with id "+ tripID + " was not found");
         return repository.findByTrip_IdEquals(tripID);
     }
 
-    public Settlement settleBerryPerson(Long tripID, Long personID, Long houseID) throws HouseNotFoundException, PersonNotFoundException, HouseIsFullException, TripNotFoundException {
+    public Settlement settleBerryPerson(Long tripID, Long personID, Long houseID) throws HouseNotFoundException, PersonNotFoundException, HouseIsFullException, TripNotFoundException, WrongParametersException {
+        validator.validateId(tripID);
+        validator.validateId(personID);
+        validator.validateId(houseID);
         Trip trip = tripService.findTripById(tripID);
         House house= houseService.getHouseByID(houseID);
         BerryPerson person = berryPersonService.findById(personID);
@@ -45,7 +49,10 @@ public class SettlementService {
         return settlement;
     }
 
-    public void unSettlePerson(Long tripID, Long personID, Long houseID) throws TripNotFoundException, HouseNotFoundException, PersonNotFoundException {
+    public void unSettlePerson(Long tripID, Long personID, Long houseID) throws TripNotFoundException, HouseNotFoundException, PersonNotFoundException, WrongParametersException {
+        validator.validateId(tripID);
+        validator.validateId(personID);
+        validator.validateId(houseID);
         Trip trip = tripService.findTripById(tripID);
         House house= houseService.getHouseByID(houseID);
         BerryPerson person = berryPersonService.findById(personID);

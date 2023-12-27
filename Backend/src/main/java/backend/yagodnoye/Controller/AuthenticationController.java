@@ -1,6 +1,7 @@
 package backend.yagodnoye.Controller;
 
 import backend.yagodnoye.Exceptions.RegisterException;
+import backend.yagodnoye.Exceptions.WrongParametersException;
 import backend.yagodnoye.Services.BerryPersonService;
 import backend.yagodnoye.authentication.AuthenticationResponse;
 import backend.yagodnoye.authentication.LoginRequest;
@@ -22,7 +23,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request
-    ) throws RegisterException {
+    ) throws RegisterException, WrongParametersException {
         return ResponseEntity.ok(service.register(request));
     }
 

@@ -2,13 +2,13 @@ package backend.yagodnoye.IdClasses;
 
 import backend.yagodnoye.Entities.Trip;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
-@EqualsAndHashCode
+@Data
 public class ScheduleID implements Serializable {
 
     private Trip trip;

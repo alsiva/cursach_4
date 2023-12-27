@@ -3,6 +3,7 @@ package backend.yagodnoye.Controller;
 import backend.yagodnoye.Exceptions.AlreadyExistsException;
 import backend.yagodnoye.Exceptions.ScheduleNotFoundException;
 import backend.yagodnoye.Exceptions.TripNotFoundException;
+import backend.yagodnoye.Exceptions.WrongParametersException;
 import backend.yagodnoye.Services.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class ScheduleController {
     @GetMapping("/schedule")
     public ResponseEntity<?> getSchedule(
             @PathVariable(name = "tripID") Long tripID
-    ) throws TripNotFoundException {
+    ) throws TripNotFoundException, WrongParametersException {
         return ResponseEntity.ok(service.getSchedule(tripID));
     }
 
@@ -29,7 +30,7 @@ public class ScheduleController {
             @PathVariable(name = "tripID") Long tripID,
             @RequestParam(name="startTime") String startTimeStr,
             @RequestParam(name="endTime") String endTimeStr
-            ) throws ScheduleNotFoundException, TripNotFoundException {
+            ) throws ScheduleNotFoundException, TripNotFoundException, WrongParametersException {
         LocalDateTime startTime = LocalDateTime.parse(startTimeStr);
         LocalDateTime endTime = LocalDateTime.parse(endTimeStr);
         service.deleteSchedule(tripID, startTime, endTime);
@@ -42,7 +43,7 @@ public class ScheduleController {
             @RequestParam(name = "startTime") String startTimeStr,
             @RequestParam(name = "endTime") String endTimeStr,
             @RequestParam(name = "description") String description
-    ) throws AlreadyExistsException, TripNotFoundException {
+    ) throws AlreadyExistsException, TripNotFoundException, WrongParametersException {
         LocalDateTime startTime = LocalDateTime.parse(startTimeStr);
         LocalDateTime endTime = LocalDateTime.parse(endTimeStr);
         return ResponseEntity.ok(service.addSchedule(tripID, startTime, endTime, description));

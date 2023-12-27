@@ -35,8 +35,8 @@ public class BerryPerson implements UserDetails {
     @Column(unique = true)
     private String username;
 
-    @OneToOne(cascade = CascadeType.DETACH)
-    private Rights right;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column(nullable = false)
     private String password;
@@ -45,7 +45,7 @@ public class BerryPerson implements UserDetails {
     @Column(nullable = false)
     private String surname;
     @Enumerated(EnumType.STRING)
-    private Sex sex;
+    private Gender gender;
     @Column(nullable = false)
     private LocalDate dateOfBirth;
     @Column(unique = true)
@@ -57,14 +57,14 @@ public class BerryPerson implements UserDetails {
     @OneToMany(mappedBy = "mainOrganizer", cascade = CascadeType.DETACH)
     private Collection<Trip> organizingTrips;
 
-    public BerryPerson(String email, String username,  String password, String name, String surname, Sex sex, LocalDate dateOfBirth, String telegram, String vk) {
+    public BerryPerson(String email, String username, String password, String name, String surname, Gender gender, LocalDate dateOfBirth, String telegram, String vk) {
         this.email = email;
         this.username = username;
-        this.right = new Rights("normal");
+        this.status = Status.normal;
         this.password = password;
         this.name = name;
         this.surname = surname;
-        this.sex = sex;
+        this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.telegram = telegram;
         this.vk = vk;
@@ -102,11 +102,11 @@ public class BerryPerson implements UserDetails {
     public String toString() {
         return "BerryPerson{" +
                 "id=" + id +
-                ", rightId=" + getRight().getId() +
+                ", right=" + status.toString() +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", sex=" + sex +
+                ", sex=" + gender +
                 ", dateOfBirth=" + dateOfBirth +
                 ", telegram='" + telegram + '\'' +
                 ", vk='" + vk + '\'' +
@@ -118,11 +118,11 @@ public class BerryPerson implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BerryPerson that = (BerryPerson) o;
-        return Objects.equals(getRight().getId(), that.getRight().getId()) && email.equals(that.email) && username.equals(that.username) && password.equals(that.password) && name.equals(that.name) && surname.equals(that.surname) && sex == that.sex && dateOfBirth.equals(that.dateOfBirth) && Objects.equals(telegram, that.telegram) && Objects.equals(vk, that.vk) && Objects.equals(organizingTrips, that.organizingTrips);
+        return Objects.equals(status, that.getStatus()) && email.equals(that.email) && username.equals(that.username) && password.equals(that.password) && name.equals(that.name) && surname.equals(that.surname) && gender == that.gender && dateOfBirth.equals(that.dateOfBirth) && Objects.equals(telegram, that.telegram) && Objects.equals(vk, that.vk) && Objects.equals(organizingTrips, that.organizingTrips);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, username, getRight().getId(), password, name, surname, sex, dateOfBirth, telegram, vk, organizingTrips);
+        return Objects.hash(email, username, status, password, name, surname, gender, dateOfBirth, telegram, vk, organizingTrips);
     }
 }

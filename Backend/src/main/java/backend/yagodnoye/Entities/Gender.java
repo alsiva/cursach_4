@@ -1,7 +1,7 @@
 package backend.yagodnoye.Entities;
 
 
-public enum Sex {
+public enum Gender {
     man,
     woman
 }

@@ -1,6 +1,6 @@
 package backend.yagodnoye.Entities;
 
-public enum RightsEnum {
+public enum Status {
     normal,
     banned,
     organizer
