@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface HouseRepository extends JpaRepository<House, Long> {
     @Query("select h from House h where h.id = ?1")
     Optional<House> findByIdEquals(@NonNull Long id);
+
+    boolean existsByNameEqualsIgnoreCase(String name);
 }

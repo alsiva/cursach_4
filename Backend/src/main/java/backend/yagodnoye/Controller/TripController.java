@@ -6,6 +6,7 @@ import backend.yagodnoye.Exceptions.WrongParametersException;
 import backend.yagodnoye.Services.BerryPersonService;
 import backend.yagodnoye.Services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -25,12 +26,12 @@ public class TripController {
     }
 
     @GetMapping("/trips")
-    public List<Trip> getTrips(){
-        return service.findAll();
+    public ResponseEntity<?> getTrips(){
+        return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping("/trips")
-    public Trip addTrip(
+    public ResponseEntity<?> addTrip(
             @RequestParam(name="name") String name,
             @RequestParam(name="description") String description,
             @RequestParam(name="startDate") String startDateStr,
@@ -39,11 +40,12 @@ public class TripController {
     ) throws PersonNotFoundException, WrongParametersException {
         LocalDate startDate = LocalDate.parse(startDateStr);
         LocalDate endDate = LocalDate.parse(endDateStr);
-        return service.addTrip(name, description, startDate, endDate, berryPersonService.findByUsername(mainOrganizerUserName));
+        return ResponseEntity.ok(service.addTrip(name, description, startDate, endDate, berryPersonService.findByUsername(mainOrganizerUserName)));
     }
 
     @DeleteMapping("/trips")
-    public int deleteTrip(@RequestParam(name = "id") String id){
-        return service.deleteTrip(Long.parseLong(id));
+    public ResponseEntity<?> deleteTrip(@RequestParam(name = "id") String id){
+        service.deleteTrip(Long.parseLong(id));
+        return ResponseEntity.ok().build();
     }
 }

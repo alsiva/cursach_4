@@ -1,5 +1,6 @@
 package backend.yagodnoye.Controller;
 
+import backend.yagodnoye.Exceptions.RegisterException;
 import backend.yagodnoye.Services.BerryPersonService;
 import backend.yagodnoye.authentication.AuthenticationResponse;
 import backend.yagodnoye.authentication.LoginRequest;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
-    private BerryPersonService service;
+    private final BerryPersonService service;
 
     @Autowired
     public AuthenticationController(BerryPersonService service){
@@ -25,7 +26,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request
-    ){
+    ) throws RegisterException {
         return ResponseEntity.ok(service.register(request));
     }
 
@@ -36,7 +37,4 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.login(request));
     }
 
-    public void setService(BerryPersonService service) {
-        this.service = service;
-    }
 }

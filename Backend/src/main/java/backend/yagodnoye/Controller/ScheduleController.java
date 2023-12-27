@@ -6,6 +6,7 @@ import backend.yagodnoye.Exceptions.ScheduleNotFoundException;
 import backend.yagodnoye.Exceptions.TripNotFoundException;
 import backend.yagodnoye.Services.ScheduleService;
 import org.springframework.cglib.core.Local;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -23,14 +24,14 @@ public class ScheduleController {
     }
 
     @GetMapping("/schedule")
-    public List<Schedule> getSchedule(
+    public ResponseEntity<?> getSchedule(
             @PathVariable(name = "tripID") Long tripID
     ) throws TripNotFoundException {
-        return service.getSchedule(tripID);
+        return ResponseEntity.ok(service.getSchedule(tripID));
     }
 
     @DeleteMapping("/schedule")
-    public void deleteSchedule(
+    public ResponseEntity<?> deleteSchedule(
             @PathVariable(name = "tripID") Long tripID,
             @RequestParam(name="startTime") String startTimeStr,
             @RequestParam(name="endTime") String endTimeStr
@@ -38,10 +39,11 @@ public class ScheduleController {
         LocalDateTime startTime = LocalDateTime.parse(startTimeStr);
         LocalDateTime endTime = LocalDateTime.parse(endTimeStr);
         service.deleteSchedule(tripID, startTime, endTime);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/schedule")
-    public Schedule addSchedule(
+    public ResponseEntity<?> addSchedule(
             @PathVariable(name = "tripID") Long tripID,
             @RequestParam(name = "startTime") String startTimeStr,
             @RequestParam(name = "endTime") String endTimeStr,
@@ -49,6 +51,6 @@ public class ScheduleController {
     ) throws AlreadyExistsException, TripNotFoundException {
         LocalDateTime startTime = LocalDateTime.parse(startTimeStr);
         LocalDateTime endTime = LocalDateTime.parse(endTimeStr);
-        return service.addSchedule(tripID, startTime, endTime, description);
+        return ResponseEntity.ok(service.addSchedule(tripID, startTime, endTime, description));
     }
 }

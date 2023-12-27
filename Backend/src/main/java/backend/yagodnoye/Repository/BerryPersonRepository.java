@@ -18,5 +18,7 @@ public interface BerryPersonRepository extends JpaRepository<BerryPerson, Long> 
     Optional<BerryPerson> findByUsernameLikeIgnoreCase(@NonNull String username);
     Optional<BerryPerson> findByIdEquals(@NonNull Long id);
 
+    boolean existsByEmailEqualsIgnoreCase(String email);
 
+    boolean existsByUsernameEqualsIgnoreCase(String username);
 }

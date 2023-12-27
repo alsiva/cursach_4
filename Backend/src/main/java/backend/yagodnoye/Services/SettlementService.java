@@ -47,7 +47,7 @@ public class SettlementService {
             repository.save(settlement);
             return settlement;
         }
-        else if (settlementList.get(0).getHouse().getMaxPeople() <= settlementList.size()) throw new HouseIsFullException();
+        else if (settlementList.get(0).getHouse().getMaxPeople() <= settlementList.size()) throw new HouseIsFullException("House with id = " + houseID + " is already full!");
         repository.save(new Settlement(trip, person, house));
         return settlement;
     }
@@ -57,7 +57,7 @@ public class SettlementService {
         House house= houseService.getHouseByID(houseID);
         BerryPerson person = berryPersonService.findById(personID);
         Optional<Settlement> settlementOptional = repository.findByTripEqualsAndHouseEqualsAndBerryPersonEquals(trip, house, person);
-        if (settlementOptional.isEmpty()) throw new PersonNotFoundException();
+        if (settlementOptional.isEmpty()) throw new PersonNotFoundException("Person with id =" + personID + " was not found");
         repository.delete(settlementOptional.get());
     }
 }

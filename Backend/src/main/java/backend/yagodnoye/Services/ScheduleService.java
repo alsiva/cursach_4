@@ -23,21 +23,21 @@ public class ScheduleService {
         this.tripService = tripService;
     }
     public List<Schedule> getSchedule(Long tripID) throws TripNotFoundException {
-        if (!tripService.tripExists(tripID)) throw new TripNotFoundException();
+        if (!tripService.tripExists(tripID)) throw new TripNotFoundException("Trip with id = " + tripID + " was not found");
         return repository.findByTrip_IdEquals(tripID);
     }
 
     public void deleteSchedule(Long tripID, LocalDateTime startTime, LocalDateTime endTime) throws TripNotFoundException, ScheduleNotFoundException {
-        if (!tripService.tripExists(tripID)) throw new TripNotFoundException();
+        if (!tripService.tripExists(tripID)) throw new TripNotFoundException("Trip with id = " + tripID + " was not found");
         Optional<Schedule> scheduleOptional = repository.findByTrip_IdEqualsAndStartEqualsAndEndEquals(tripID, startTime, endTime);
-        if (scheduleOptional.isEmpty()) throw new ScheduleNotFoundException();
+        if (scheduleOptional.isEmpty()) throw new ScheduleNotFoundException("Schedule starting " + startTime + " and ending " + endTime + " was not found");
         repository.delete(scheduleOptional.get());
     }
 
     public Schedule addSchedule(Long tripID, LocalDateTime startTime, LocalDateTime endTime, String description) throws TripNotFoundException, AlreadyExistsException {
-        if (!tripService.tripExists(tripID)) throw new TripNotFoundException();
+        if (!tripService.tripExists(tripID)) throw new TripNotFoundException("Trip with id = " + tripID + " was not found");
         Optional<Schedule> scheduleOptional = repository.findByTrip_IdEqualsAndStartEqualsAndEndEquals(tripID, startTime, endTime);
-        if(scheduleOptional.isPresent()) throw new AlreadyExistsException();
+        if(scheduleOptional.isPresent()) throw new AlreadyExistsException("Schedule starting " + startTime + " and ending " + endTime + " was not found");
         return repository.save(new Schedule(tripService.findTripById(tripID), startTime, endTime, description));
     }
 }
